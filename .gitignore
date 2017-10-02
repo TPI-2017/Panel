@@ -31,3 +31,12 @@
 
 # End of https://www.gitignore.io/api/qtcreator
 
+# Los archivos objeto
+*.o
+
+# El ejecutable
+Panel
+
+# El Makefile
+Makefile
+

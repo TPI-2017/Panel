@@ -15,6 +15,11 @@ public:
     explicit Panel(QWidget *parent = 0);
     ~Panel();
 
+private slots:
+    void on_applyButton_clicked();
+
+    void on_actionQuit_triggered();
+
 private:
     Ui::Panel *ui;
 };
