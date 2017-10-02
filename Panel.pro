@@ -32,3 +32,6 @@ HEADERS += \
 
 FORMS += \
         panel.ui
+
+RESOURCES += \
+    translations.qrc

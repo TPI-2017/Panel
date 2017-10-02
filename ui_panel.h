@@ -39,6 +39,8 @@ class Ui_Panel
 public:
     QAction *actionDisconnect;
     QAction *actionQuit;
+    QAction *actionEspaniol;
+    QAction *actionEnglish;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *north;
@@ -71,6 +73,7 @@ public:
     QGraphicsView *graphicsView;
     QMenuBar *menuBar;
     QMenu *menuConnection;
+    QMenu *menuLanguage;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *Panel)
@@ -82,6 +85,10 @@ public:
         actionDisconnect->setObjectName(QStringLiteral("actionDisconnect"));
         actionQuit = new QAction(Panel);
         actionQuit->setObjectName(QStringLiteral("actionQuit"));
+        actionEspaniol = new QAction(Panel);
+        actionEspaniol->setObjectName(QStringLiteral("actionEspaniol"));
+        actionEnglish = new QAction(Panel);
+        actionEnglish->setObjectName(QStringLiteral("actionEnglish"));
         centralWidget = new QWidget(Panel);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -233,6 +240,8 @@ public:
         menuBar->setGeometry(QRect(0, 0, 500, 19));
         menuConnection = new QMenu(menuBar);
         menuConnection->setObjectName(QStringLiteral("menuConnection"));
+        menuLanguage = new QMenu(menuBar);
+        menuLanguage->setObjectName(QStringLiteral("menuLanguage"));
         Panel->setMenuBar(menuBar);
         statusBar = new QStatusBar(Panel);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -245,9 +254,12 @@ public:
 #endif // QT_NO_SHORTCUT
 
         menuBar->addAction(menuConnection->menuAction());
+        menuBar->addAction(menuLanguage->menuAction());
         menuConnection->addAction(actionDisconnect);
         menuConnection->addSeparator();
         menuConnection->addAction(actionQuit);
+        menuLanguage->addAction(actionEspaniol);
+        menuLanguage->addAction(actionEnglish);
 
         retranslateUi(Panel);
 
@@ -259,6 +271,8 @@ public:
         Panel->setWindowTitle(QApplication::translate("Panel", "Panel", 0));
         actionDisconnect->setText(QApplication::translate("Panel", "Disconnect", 0));
         actionQuit->setText(QApplication::translate("Panel", "Quit", 0));
+        actionEspaniol->setText(QApplication::translate("Panel", "Espa\303\261ol", 0));
+        actionEnglish->setText(QApplication::translate("Panel", "English", 0));
         contentBox->setTitle(QApplication::translate("Panel", "Content", 0));
         textLabel->setText(QApplication::translate("Panel", "&Text:", 0));
         textMessageField->setText(QString());
@@ -266,7 +280,7 @@ public:
         slidingBox->setTitle(QApplication::translate("Panel", "Sliding", 0));
         slideCheckBox->setText(QApplication::translate("Panel", "Slide", 0));
         speedLabel->setText(QApplication::translate("Panel", "&Speed (px/sec):", 0));
-        directionLabel->setText(QApplication::translate("Panel", "Direction:", 0));
+        directionLabel->setText(QApplication::translate("Panel", "&Direction:", 0));
         directionBox->clear();
         directionBox->insertItems(0, QStringList()
          << QApplication::translate("Panel", "Left", 0)
@@ -279,6 +293,7 @@ public:
         restoreButton->setText(QApplication::translate("Panel", "Restore", 0));
         applyButton->setText(QApplication::translate("Panel", "Apply", 0));
         menuConnection->setTitle(QApplication::translate("Panel", "Connection", 0));
+        menuLanguage->setTitle(QApplication::translate("Panel", "Language", 0));
     } // retranslateUi
 
 };

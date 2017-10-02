@@ -88,7 +88,7 @@
            <item row="2" column="0">
             <widget class="QLabel" name="directionLabel">
              <property name="text">
-              <string>Direction:</string>
+              <string>&amp;Direction:</string>
              </property>
              <property name="buddy">
               <cstring>directionBox</cstring>
@@ -207,7 +207,15 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actionEspaniol"/>
+    <addaction name="actionEnglish"/>
+   </widget>
    <addaction name="menuConnection"/>
+   <addaction name="menuLanguage"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionDisconnect">
@@ -218,6 +226,16 @@
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionEspaniol">
+   <property name="text">
+    <string>Español</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
    </property>
   </action>
  </widget>

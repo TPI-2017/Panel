@@ -2,6 +2,7 @@
 #define PANEL_H
 
 #include <QMainWindow>
+#include <QApplication>
 
 namespace Ui {
 class Panel;
@@ -19,6 +20,10 @@ private slots:
     void on_applyButton_clicked();
 
     void on_actionQuit_triggered();
+
+    void on_actionEspaniol_triggered();
+
+    void on_actionEnglish_triggered();
 
 private:
     Ui::Panel *ui;
