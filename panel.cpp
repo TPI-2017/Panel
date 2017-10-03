@@ -1,18 +1,18 @@
 #include "panel.h"
 #include "ui_panel.h"
+#include "translation.h"
 #include <QMessageBox>
-#include <QTranslator>
+#include <QLocale>
 
 using namespace std;
-
-QTranslator translator, defaultTranslator;
 
 Panel::Panel(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Panel)
 {
     ui->setupUi(this);
-    QApplication::instance()->installTranslator(&translator);
+    // Traduce la interfaz según el idioma del sistema operativo que usa el cliente
+    Translation::translateTo();
 }
 
 Panel::~Panel()
@@ -23,7 +23,8 @@ Panel::~Panel()
 void Panel::on_applyButton_clicked()
 {
     QString text = ui->textMessageField->text();
-    QMessageBox::information(this, tr("Info"), tr("Appling this change: %1").arg(text));
+    QString locale = QLocale::system().name();
+    QMessageBox::information(this, tr("Info"), tr("Appling this change: %1\n Idioma:%2").arg(text, locale));
 }
 
 void Panel::on_actionQuit_triggered()
@@ -33,14 +34,12 @@ void Panel::on_actionQuit_triggered()
 
 void Panel::on_actionEspaniol_triggered()
 {
-    translator.load(":/es.qm");
-    QApplication::instance()->installTranslator(&translator);
+    Translation::translateTo(TRANSLATION_ES);
     ui->retranslateUi(this);
 }
 
 void Panel::on_actionEnglish_triggered()
 {
-    translator.load(":/en.qm");
-    QApplication::instance()->installTranslator(&translator);
+    Translation::translateTo(TRANSLATION_EN);
     ui->retranslateUi(this);
 }

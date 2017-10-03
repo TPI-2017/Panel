@@ -25,10 +25,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        panel.cpp
+        panel.cpp \
+    translation.cpp
 
 HEADERS += \
-        panel.h
+        panel.h \
+    translation.h
 
 FORMS += \
         panel.ui
