@@ -2,7 +2,6 @@
 #include "ui_panel.h"
 #include "translation.h"
 #include <QMessageBox>
-#include <QLocale>
 
 using namespace std;
 
@@ -23,8 +22,7 @@ Panel::~Panel()
 void Panel::on_applyButton_clicked()
 {
     QString text = ui->textMessageField->text();
-    QString locale = QLocale::system().name();
-    QMessageBox::information(this, tr("Info"), tr("Appling this change: %1\n Idioma:%2").arg(text, locale));
+    QMessageBox::information(this, tr("Info"), tr("Appling this change: %1\n").arg(text));
 }
 
 void Panel::on_actionQuit_triggered()

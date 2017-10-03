@@ -40,3 +40,6 @@ Panel
 # El Makefile
 Makefile
 
+# moc_
+moc_panel.cpp
+
