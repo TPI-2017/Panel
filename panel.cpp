@@ -3,15 +3,11 @@
 #include "translation.h"
 #include <QMessageBox>
 
-using namespace std;
-
 Panel::Panel(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Panel)
 {
     ui->setupUi(this);
-    // Traduce la interfaz según el idioma del sistema operativo que usa el cliente
-    Translation::translateTo();
 }
 
 Panel::~Panel()
@@ -21,8 +17,6 @@ Panel::~Panel()
 
 void Panel::on_applyButton_clicked()
 {
-    QString text = ui->textMessageField->text();
-    QMessageBox::information(this, tr("Info"), tr("Appling this change: %1\n").arg(text));
 }
 
 void Panel::on_actionQuit_triggered()
@@ -32,12 +26,12 @@ void Panel::on_actionQuit_triggered()
 
 void Panel::on_actionEspaniol_triggered()
 {
-    Translation::translateTo(TRANSLATION_ES);
+    Translation::translate(Translation::Spanish);
     ui->retranslateUi(this);
 }
 
 void Panel::on_actionEnglish_triggered()
 {
-    Translation::translateTo(TRANSLATION_EN);
+    Translation::translate(Translation::English);
     ui->retranslateUi(this);
 }

@@ -1,15 +1,13 @@
 #include "panel.h"
 #include "matrix.h"
+#include "translation.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Panel w;
+    Translation::translate();
     w.show();
-
-    Matrix m;
-    //m.show();
-
     return a.exec();
 }
