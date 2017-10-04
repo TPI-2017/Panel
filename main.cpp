@@ -1,5 +1,4 @@
 #include "panel.h"
-#include "matrix.h"
 #include "translation.h"
 #include <QApplication>
 
