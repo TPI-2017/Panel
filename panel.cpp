@@ -35,3 +35,16 @@ void Panel::on_actionEnglish_triggered()
     Translation::translate(Translation::English);
     ui->retranslateUi(this);
 }
+
+void Panel::on_actionDisconnect_triggered()
+{
+    close();
+    disconnect();
+}
+
+void Panel::showWindow()
+{
+    this->show();
+}
+
+

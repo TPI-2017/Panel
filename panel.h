@@ -16,6 +16,9 @@ public:
     explicit Panel(QWidget *parent = 0);
     ~Panel();
 
+signals:
+    void disconnect();
+
 private slots:
     void on_applyButton_clicked();
 
@@ -24,6 +27,10 @@ private slots:
     void on_actionEspaniol_triggered();
 
     void on_actionEnglish_triggered();
+
+    void on_actionDisconnect_triggered();
+
+    void showWindow();
 
 private:
     Ui::Panel *ui;

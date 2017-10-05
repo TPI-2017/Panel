@@ -26,14 +26,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         panel.cpp \
-    translation.cpp
+    translation.cpp \
+    login.cpp \
+    controller.cpp
 
 HEADERS += \
         panel.h \
-    translation.h
+    translation.h \
+    login.h \
+    controller.h
 
 FORMS += \
-        panel.ui
+        panel.ui \
+    login.ui
 
 RESOURCES += \
     translations.qrc
