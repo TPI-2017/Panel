@@ -1,7 +1,6 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include "panel.h"
 #include <QDialog>
 
 namespace Ui {
@@ -25,7 +24,8 @@ private slots:
 
 private:
     Ui::Login *ui;
-    const std::string TOKEN_VALID = "1234";
+    const std::string TOKEN_VALID = "lacartel";
+    const char* TOKEN_EXP         = "^\\S+";
 };
 
 #endif // LOGIN_H

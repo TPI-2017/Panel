@@ -2,6 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es_AR" sourcelanguage="en_US">
 <context>
+    <name>Login</name>
+    <message>
+        <location filename="login.ui" line="26"/>
+        <source>Login</source>
+        <translation>Identificación</translation>
+    </message>
+    <message>
+        <location filename="login.ui" line="64"/>
+        <source>Enter the security token</source>
+        <translation>Ingrese el token de seguridad</translation>
+    </message>
+    <message>
+        <location filename="login.ui" line="96"/>
+        <source>Connect</source>
+        <translation>Entrar</translation>
+    </message>
+</context>
+<context>
     <name>Panel</name>
     <message>
         <location filename="panel.ui" line="14"/>
@@ -115,14 +133,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.cpp" line="23"/>
         <source>Info</source>
-        <translation>Aviso</translation>
+        <translation type="vanished">Aviso</translation>
     </message>
     <message>
-        <location filename="panel.cpp" line="23"/>
         <source>Appling this change: %1</source>
-        <translation>Se aplica los siguientes cambios: %1</translation>
+        <translation type="vanished">Se aplica los siguientes cambios: %1</translation>
     </message>
 </context>
 </TS>

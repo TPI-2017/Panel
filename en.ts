@@ -2,6 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_US">
 <context>
+    <name>Login</name>
+    <message>
+        <location filename="login.ui" line="26"/>
+        <source>Login</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="login.ui" line="64"/>
+        <source>Enter the security token</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="login.ui" line="96"/>
+        <source>Connect</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>Panel</name>
     <message>
         <location filename="panel.ui" line="14"/>
