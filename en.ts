@@ -112,23 +112,50 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="223"/>
+        <location filename="panel.ui" line="219"/>
+        <source>Help</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="panel.ui" line="230"/>
         <source>Disconnect</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="228"/>
+        <location filename="panel.ui" line="235"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="233"/>
+        <location filename="panel.ui" line="240"/>
         <source>Español</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="238"/>
+        <location filename="panel.ui" line="245"/>
         <source>English</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="panel.ui" line="250"/>
+        <source>About</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="panel.cpp" line="52"/>
+        <source>Authors</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="panel.cpp" line="53"/>
+        <source>
+LED Display - © 2017
+
+Garcı́a, Agustı́n
+Levy, Santiago
+Romero Dapozo, Ramiro
+Ternouski, Sebastian Nahuel
+</source>
         <translation></translation>
     </message>
 </context>

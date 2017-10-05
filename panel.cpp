@@ -47,4 +47,11 @@ void Panel::showWindow()
     this->show();
 }
 
-
+void Panel::on_actionAbout_triggered()
+{
+    QMessageBox::information(this, tr("Authors"),
+                            tr("\nLED Display - © 2017\n\n"
+                            "Garcı́a, Agustı́n\nLevy, Santiago\n"
+                            "Romero Dapozo, Ramiro\nTernouski, Sebastian Nahuel\n"),
+                            QMessageBox::Ok, 0);
+}

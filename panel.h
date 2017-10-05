@@ -32,6 +32,8 @@ private slots:
 
     void showWindow();
 
+    void on_actionAbout_triggered();
+
 private:
     Ui::Panel *ui;
 };

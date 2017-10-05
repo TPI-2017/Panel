@@ -41,6 +41,7 @@ public:
     QAction *actionQuit;
     QAction *actionEspaniol;
     QAction *actionEnglish;
+    QAction *actionAbout;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *north;
@@ -74,6 +75,7 @@ public:
     QMenuBar *menuBar;
     QMenu *menuConnection;
     QMenu *menuLanguage;
+    QMenu *menuAbout;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *Panel)
@@ -89,6 +91,8 @@ public:
         actionEspaniol->setObjectName(QStringLiteral("actionEspaniol"));
         actionEnglish = new QAction(Panel);
         actionEnglish->setObjectName(QStringLiteral("actionEnglish"));
+        actionAbout = new QAction(Panel);
+        actionAbout->setObjectName(QStringLiteral("actionAbout"));
         centralWidget = new QWidget(Panel);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -242,6 +246,8 @@ public:
         menuConnection->setObjectName(QStringLiteral("menuConnection"));
         menuLanguage = new QMenu(menuBar);
         menuLanguage->setObjectName(QStringLiteral("menuLanguage"));
+        menuAbout = new QMenu(menuBar);
+        menuAbout->setObjectName(QStringLiteral("menuAbout"));
         Panel->setMenuBar(menuBar);
         statusBar = new QStatusBar(Panel);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -255,11 +261,13 @@ public:
 
         menuBar->addAction(menuConnection->menuAction());
         menuBar->addAction(menuLanguage->menuAction());
+        menuBar->addAction(menuAbout->menuAction());
         menuConnection->addAction(actionDisconnect);
         menuConnection->addSeparator();
         menuConnection->addAction(actionQuit);
         menuLanguage->addAction(actionEspaniol);
         menuLanguage->addAction(actionEnglish);
+        menuAbout->addAction(actionAbout);
 
         retranslateUi(Panel);
 
@@ -273,6 +281,7 @@ public:
         actionQuit->setText(QApplication::translate("Panel", "Quit", 0));
         actionEspaniol->setText(QApplication::translate("Panel", "Espa\303\261ol", 0));
         actionEnglish->setText(QApplication::translate("Panel", "English", 0));
+        actionAbout->setText(QApplication::translate("Panel", "About", 0));
         contentBox->setTitle(QApplication::translate("Panel", "Content", 0));
         textLabel->setText(QApplication::translate("Panel", "&Text:", 0));
         textMessageField->setText(QString());
@@ -294,6 +303,7 @@ public:
         applyButton->setText(QApplication::translate("Panel", "Apply", 0));
         menuConnection->setTitle(QApplication::translate("Panel", "Connection", 0));
         menuLanguage->setTitle(QApplication::translate("Panel", "Language", 0));
+        menuAbout->setTitle(QApplication::translate("Panel", "Help", 0));
     } // retranslateUi
 
 };

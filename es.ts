@@ -113,32 +113,58 @@
         <translation>Idioma</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="223"/>
+        <location filename="panel.ui" line="219"/>
+        <source>Help</source>
+        <translation>Ayuda</translation>
+    </message>
+    <message>
+        <location filename="panel.ui" line="230"/>
         <source>Disconnect</source>
         <translation>Desconectar</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="228"/>
+        <location filename="panel.ui" line="235"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="233"/>
+        <location filename="panel.ui" line="240"/>
         <source>Español</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="238"/>
+        <location filename="panel.ui" line="245"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message>
-        <source>Info</source>
-        <translation type="vanished">Aviso</translation>
+        <location filename="panel.ui" line="250"/>
+        <source>About</source>
+        <translation>Sobre..</translation>
     </message>
     <message>
-        <source>Appling this change: %1</source>
-        <translation type="vanished">Se aplica los siguientes cambios: %1</translation>
+        <location filename="panel.cpp" line="52"/>
+        <source>Authors</source>
+        <translation>Autores</translation>
+    </message>
+    <message>
+        <location filename="panel.cpp" line="53"/>
+        <source>
+LED Display - © 2017
+
+Garcı́a, Agustı́n
+Levy, Santiago
+Romero Dapozo, Ramiro
+Ternouski, Sebastian Nahuel
+</source>
+        <translation>
+Cartel LED - © 2017
+
+Garcı́a, Agustı́n
+Levy, Santiago
+Romero Dapozo, Ramiro
+Ternouski, Sebastian Nahuel
+</translation>
     </message>
 </context>
 </TS>
