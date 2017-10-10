@@ -1,5 +1,6 @@
 #include "login.h"
 #include "ui_login.h"
+#include "token.h"
 #include <QtDebug>
 #include <QRegExpValidator>
 
@@ -8,7 +9,8 @@ Login::Login(QWidget *parent) :
     ui(new Ui::Login)
 {
     ui->setupUi(this);
-    QRegExp regExp(TOKEN_EXP);
+    Token::initStaticVars();
+    QRegExp regExp(Token::getTokenExp());
     ui->tokenInput->setValidator(new QRegExpValidator(regExp, this));
 }
 
@@ -20,7 +22,7 @@ Login::~Login()
 void Login::on_loginButton_clicked()
 {
     std::string token = ui->tokenInput->text().toStdString();
-    if (TOKEN_VALID == token) {
+    if (Token::getToken() == token) {
         this->hide();
         ui->tokenInput->setText("");
         ui->tokenInput->setStyleSheet("color: black");

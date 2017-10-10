@@ -8,6 +8,7 @@ Panel::Panel(QWidget *parent) :
     ui(new Ui::Panel)
 {
     ui->setupUi(this);
+    token_change = new Token();
 }
 
 Panel::~Panel()
@@ -54,4 +55,9 @@ void Panel::on_actionAbout_triggered()
                             "Garcı́a, Agustı́n\nLevy, Santiago\n"
                             "Romero Dapozo, Ramiro\nTernouski, Sebastian Nahuel\n"),
                             QMessageBox::Ok, 0);
+}
+
+void Panel::on_actionChange_token_triggered()
+{
+    token_change->show();
 }

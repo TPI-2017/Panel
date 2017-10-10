@@ -28,17 +28,20 @@ SOURCES += \
         panel.cpp \
     translation.cpp \
     login.cpp \
-    controller.cpp
+    controller.cpp \
+    token.cpp
 
 HEADERS += \
         panel.h \
     translation.h \
     login.h \
-    controller.h
+    controller.h \
+    token.h
 
 FORMS += \
         panel.ui \
-    login.ui
+    login.ui \
+    token.ui
 
 RESOURCES += \
     translations.qrc

@@ -24,8 +24,6 @@ private slots:
 
 private:
     Ui::Login *ui;
-    const std::string TOKEN_VALID = "lacartel";
-    const char* TOKEN_EXP         = "^\\S+";
 };
 
 #endif // LOGIN_H
