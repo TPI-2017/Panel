@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QApplication>
+#include "client.h"
 
 namespace Ui {
 	class Panel;
@@ -24,11 +25,11 @@ private slots:
 	void on_actionEspaniol_triggered();
 	void on_actionEnglish_triggered();
 	void on_actionDisconnect_triggered();
-	void showWindow();
 	void on_actionAbout_triggered();
 	void on_actionChange_token_triggered();
 private:
 	Ui::Panel *ui;
+	Client *mClient;
 };
 
 #endif // PANEL_H

@@ -43,12 +43,14 @@ SOURCES += \
 	translation.cpp \
 	controller.cpp \
 	client.cpp \
+	login_dialog.cpp \
 	protocol/Message.cpp
 
 HEADERS += \
 	panel.h \
 	translation.h \
 	controller.h \
+	login_dialog.h \
 	client.h
 
 FORMS += \

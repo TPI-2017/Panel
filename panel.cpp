@@ -1,13 +1,21 @@
 #include "panel.h"
 #include "ui_panel.h"
 #include "translation.h"
+#include "login_dialog.h"
 #include <QMessageBox>
 
 Panel::Panel(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::Panel)
+    ui(new Ui::Panel),
+    mClient(new Client())
 {
     ui->setupUi(this);
+    show();
+    LoginDialog *loginDialog = new LoginDialog(this);
+    int result = loginDialog->exec();
+    
+    if (result != QDialog::Accepted)
+    	this->close();
 }
 
 Panel::~Panel()
@@ -42,16 +50,11 @@ void Panel::on_actionDisconnect_triggered()
     disconnect();
 }
 
-void Panel::showWindow()
-{
-    this->show();
-}
-
 void Panel::on_actionAbout_triggered()
 {
     QMessageBox::information(this, tr("Authors"),
                             tr("\nLED Display - © 2017\n\n"
-                            "Garcı́a, Agustı́n\nLevy, Santiago\n"
+                            "García, Agustín\nLevy, Santiago\n"
                             "Romero Dapozo, Ramiro\nTernouski, Sebastian Nahuel\n"),
                             QMessageBox::Ok, 0);
 }
