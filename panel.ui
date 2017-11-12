@@ -24,35 +24,21 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <layout class="QFormLayout" name="contentForm">
-           <item row="0" column="0">
-            <widget class="QLabel" name="textLabel">
-             <property name="text">
-              <string>&amp;Text:</string>
-             </property>
-             <property name="buddy">
-              <cstring>textMessageField</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="textMessageField">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="useMatrixButton">
+          <widget class="QLabel" name="textLabel">
            <property name="text">
-            <string>Use matrix ...</string>
+            <string>Text:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGraphicsView" name="previewWidget"/>
+          <widget class="QPlainTextEdit" name="textMessageField"/>
+         </item>
+         <item alignment="Qt::AlignRight">
+          <widget class="QLabel" name="remainingChars">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -196,7 +182,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnection">

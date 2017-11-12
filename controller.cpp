@@ -1,5 +1,4 @@
 #include "controller.h"
-#include "login.h"
 #include "panel.h"
 #include "translation.h"
 

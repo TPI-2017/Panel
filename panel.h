@@ -5,38 +5,30 @@
 #include <QApplication>
 
 namespace Ui {
-class Panel;
+	class Panel;
 }
 
 class Panel : public QMainWindow
 {
-    Q_OBJECT
-
+	Q_OBJECT
 public:
-    explicit Panel(QWidget *parent = 0);
-    ~Panel();
+	explicit Panel(QWidget *parent = 0);
+	~Panel();
 
 signals:
-    void disconnect();
+	void disconnect();
 
 private slots:
-    void on_applyButton_clicked();
-
-    void on_actionQuit_triggered();
-
-    void on_actionEspaniol_triggered();
-
-    void on_actionEnglish_triggered();
-
-    void on_actionDisconnect_triggered();
-
-    void showWindow();
-
-    void on_actionAbout_triggered();
-
-    void on_actionChange_token_triggered();
-
+	void on_applyButton_clicked();
+	void on_actionQuit_triggered();
+	void on_actionEspaniol_triggered();
+	void on_actionEnglish_triggered();
+	void on_actionDisconnect_triggered();
+	void showWindow();
+	void on_actionAbout_triggered();
+	void on_actionChange_token_triggered();
 private:
+	Ui::Panel *ui;
 };
 
 #endif // PANEL_H
