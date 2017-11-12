@@ -7,6 +7,7 @@
 #include <QSslSocket>
 #include <QSslCertificate>
 #include <QHostAddress>
+#include "protocol/Message.h"
 
 // Esta clase maneja todas las interacciones con el cartel. Tiene slots para
 // iniciar una interacción y señales para indicar el resultado.
@@ -34,10 +35,14 @@ public:
 		BadPassword,
 		BadWifiConfig,
 		BadTextEncoding,
-		CertificateMissing
+		CertificateMissing,
+		ResponseTimeout,
+		WrongResponse,
+		Unknown
 	};
 	Q_ENUM(Error)
 
+	void setHostname(QString hostname);
 	void setWorkingPassword(QString password);
 
 public slots:
@@ -51,24 +56,26 @@ signals:
 	void textChanged(QString text);
 	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
 	void errorOccurred(Error error);
+	void errorOccurred(QString error);
 	void stateChanged(State state);
 
-private slots:
-	void connected();
-	void disconnected();
-	void error(QAbstractSocket::SocketError err);
-	void readyToRead();
-	void sslErrors(const QList<QSslError> &errors);
 private:
 	void loadLocalCertificate();
 	void changeState(State newState);
+	void performInteraction();
+	void disconnect();
+	void panic(Error reason);
+	void panic(QString reason);
+	bool receive(void *data, uint8_t Timeout);
 
+	static constexpr uint8_t Timeout = 5;
 	QSslSocket mSocket;
 	QString mPassword;
+	QString mHostname;
 	QSslCertificate mCertificate;
 	State mState;
-    // Message mRequestMessage;
-    // Message mResponseMessage;
+	Message mRequestMessage;
+	Message mResponseMessage;
 };
 
 #endif // CLIENT_H

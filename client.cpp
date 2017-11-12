@@ -5,11 +5,6 @@
 Client::Client()
 : mState(State::NotReady)
 {
-	connect(&mSocket, &QSslSocket::encrypted, this, &Client::connected);
-	connect(&mSocket, &QSslSocket::disconnected, this, &Client::disconnected);
-	connect(&mSocket, &QSslSocket::readyRead, this, &Client::readyToRead);
-	connect(&mSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(error(QAbstractSocket::SocketError)));
-	connect(&mSocket, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(sslErrors(QList<QSslError>)));
 	loadLocalCertificate();
 }
 
@@ -26,70 +21,165 @@ void Client::loadLocalCertificate()
 	mSocket.addCaCertificate(mCertificate);
 }
 
-void Client::changeState(State newState)
+void Client::setHostname(QString hostname)
 {
-	mState = newState;
-	emit stateChanged(mState);
+	mHostname = hostname;
 }
 
-void Client::connected()
+void Client::setWorkingPassword(QString password)
 {
-	changeState(Connected);
-	// output->insertPlainText("Connected.\n");
-}
-
-void Client::disconnected()
-{
-	changeState(Disconnected);
-	// output->insertPlainText("Disconnected.\n");
-}
-
-void Client::error(QAbstractSocket::SocketError err)
-{
-	// output->insertPlainText(socket->errorString() + "\n");
-	changeState(Disconnected);
-}
-
-void Client::readyToRead()
-{
-	// QByteArray array(mSocket.readAll());
-	// output->insertPlainText(QString::fromLatin1(array));
-}
-
-void Client::sslErrors(const QList<QSslError> &errors)
-{
-	for (const QSslError &err : errors)
-	{
-		// output->insertPlainText(err.errorString() + "\n");
-	}
+	mPassword = password;
 }
 
 void Client::setText(QString text, uint8_t blinkRate, uint8_t slideRate)
 {
-    if (mState != Disconnected)
-        return;
+	if (mState != Disconnected)
+		return;
+
+	mRequestMessage = Message::createSetTextRequest(blinkRate, slideRate, text.toStdString().data());
+	performInteraction();
 }
 
 void Client::getText()
 {
-    if (mState != Disconnected)
-        return;
+	if (mState != Disconnected)
+		return;
+
+	mRequestMessage = Message::createGetTextRequest();
+	performInteraction();
 }
 
 void Client::setPassword(QString password)
 {
-    if (mState != Disconnected)
-        return;
+	if (mState != Disconnected)
+		return;
+
+	mRequestMessage = Message::createSetPasswordRequest(password.toStdString().data());
 }
 
 void Client::setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask)
 {
-    if (mState != Disconnected)
-        return;
+	if (mState != Disconnected)
+		return;
+
+	mRequestMessage = Message::createSetWifiConfigRequest(SSID.toStdString().data(), wifiPassword.toStdString().data(), ip.toIPv4Address(), subnetMask.toIPv4Address());
+	performInteraction();
 }
 
 void Client::getWifiConfig()
 {
-    if (mState != Disconnected)
-        return;
+	if (mState != Disconnected)
+		return;
+
+	mRequestMessage = Message::createGetWifiConfigRequest();
+	performInteraction();
+}
+
+void Client::performInteraction()
+{
+	const Message authRequest = Message::createAuthRequest(mPassword.toStdString().data());
+	char incomingBuffer[Message::MESSAGE_SIZE];
+	
+	// Abrimos conexión TLS
+	mSocket.connectToHostEncrypted(mHostname, 443);
+	mSocket.waitForEncrypted(Timeout);
+	changeState(Connected);
+	
+	// Nos autenticamos
+	{
+		qint64 bytesWritten;
+		bytesWritten = mSocket.write(static_cast<const char*>(authRequest.data()), Message::MESSAGE_SIZE);
+		if (bytesWritten != Message::MESSAGE_SIZE) {
+			panic(Unknown);
+			return;
+		}
+			
+		changeState(AuthSent);
+		receive(incomingBuffer, Timeout);
+		Message authResponse = Message::createMessage(incomingBuffer);
+		if (authResponse.type() != Message::Type::OK) {
+			panic(Client::BadPassword);
+			return;
+		}
+		changeState(AuthOk); 
+	}
+
+	// Mandamos la solicitud
+	{
+		qint64 bytesWritten;
+		bytesWritten = mSocket.write(static_cast<const char*>(authRequest.data()), Message::MESSAGE_SIZE);
+		changeState(RequestSent);
+		mSocket.waitForReadyRead(Timeout);
+		receive(incomingBuffer, Timeout);
+		mResponseMessage = Message::createMessage(incomingBuffer);
+
+		switch(mRequestMessage.type())
+		{
+		case Message::SetText:
+		case Message::SetWiFiConfig:
+			if (mResponseMessage.type() != Message::OK) {
+				panic(WrongResponse);
+				return;
+			}
+			break;
+		case Message::SetPassword:
+			if (mResponseMessage.type() != Message::OK) {
+				panic(WrongResponse);
+				return;
+			}
+			// La próxima usamos la nueva contraseña
+			mPassword = QString::fromLatin1(mRequestMessage.text());
+			break;
+		case Message::GetText:
+			if (mResponseMessage.type() != Message::GetTextResponse) {
+				panic(WrongResponse);
+				return;
+			}
+			emit textChanged(QString::fromLatin1(mResponseMessage.text()));
+			break;
+		case Message::GetWiFiConfig:
+			if (mResponseMessage.type() != Message::GetWiFiConfigResponse) {
+				panic(WrongResponse);
+				return;
+			}
+			emit wifiConfigChanged(	QString::fromLatin1(mResponseMessage.wifiSSID()),
+						QString::fromLatin1(mResponseMessage.wifiPassword()),
+						QHostAddress(mResponseMessage.wifiIP()),
+						QHostAddress(mResponseMessage.wifiSubnet())
+						);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	disconnect();
+}
+
+void Client::disconnect()
+{
+	if (mSocket.isOpen())
+		mSocket.close();
+	
+	mSocket.waitForDisconnected();
+	changeState(Disconnected);
+}
+
+void Client::panic(Client::Error reason)
+{
+	emit errorOccurred(reason);
+	disconnect();
+}
+
+bool Client::receive(void *data, uint8_t Timeout)
+{
+	// TODO
+	#warning No implementado
+	return false;
+}
+
+void Client::changeState(State newState)
+{
+	mState = newState;
+	emit stateChanged(mState);
 }

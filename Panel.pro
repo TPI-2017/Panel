@@ -18,6 +18,11 @@ TEMPLATE = app
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+win32 {
+	DEFINES += WIN32
+	LIBS += -lws2_32
+}
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -31,7 +36,8 @@ SOURCES += \
     login.cpp \
     controller.cpp \
     token.cpp \
-    client.cpp
+    client.cpp \
+    protocol/Message.cpp
 
 HEADERS += \
         panel.h \
