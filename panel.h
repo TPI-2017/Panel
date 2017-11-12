@@ -1,7 +1,6 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-#include "token.h"
 #include <QMainWindow>
 #include <QApplication>
 
@@ -38,8 +37,6 @@ private slots:
     void on_actionChange_token_triggered();
 
 private:
-    Ui::Panel *ui;
-    Token *token_change;
 };
 
 #endif // PANEL_H

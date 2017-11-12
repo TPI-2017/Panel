@@ -8,7 +8,6 @@ Panel::Panel(QWidget *parent) :
     ui(new Ui::Panel)
 {
     ui->setupUi(this);
-    token_change = new Token();
 }
 
 Panel::~Panel()
@@ -59,5 +58,4 @@ void Panel::on_actionAbout_triggered()
 
 void Panel::on_actionChange_token_triggered()
 {
-    token_change->show();
 }
