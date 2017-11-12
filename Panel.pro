@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT      += core gui
+QT	+= network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,14 +30,16 @@ SOURCES += \
     translation.cpp \
     login.cpp \
     controller.cpp \
-    token.cpp
+    token.cpp \
+    client.cpp
 
 HEADERS += \
         panel.h \
     translation.h \
     login.h \
     controller.h \
-    token.h
+    token.h \
+    client.h
 
 FORMS += \
         panel.ui \
