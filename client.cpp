@@ -3,8 +3,15 @@
 #include <QHostAddress>
 
 Client::Client()
-: mState(State::NotReady)
+: mSocket(this)
 {
+	qRegisterMetaType<Client::State>("Client::State");
+	qRegisterMetaType<Client::Error>("Client::Error");
+}
+
+void Client::init()
+{
+	changeState(NotReady);
 	loadLocalCertificate();
 }
 
@@ -13,12 +20,16 @@ void Client::loadLocalCertificate()
 	QString path = ":/ssl/res/TLS.ca_x509.cer";
 
 	auto list = QSslCertificate::fromPath(path, QSsl::Der);
-	if (list.empty())
+	if (list.empty()) {
+		changeState(NotReady);
 		emit errorOccurred(Error::CertificateMissing);
-	else
+		return;
+	} else {
 		mCertificate = list.front();
+	}
 
 	mSocket.addCaCertificate(mCertificate);
+	changeState(Disconnected);
 }
 
 void Client::setHostname(QString hostname)
@@ -82,7 +93,12 @@ void Client::performInteraction()
 	
 	// Abrimos conexión TLS
 	mSocket.connectToHostEncrypted(mHostname, 443);
+	changeState(Connecting);
 	mSocket.waitForEncrypted(Timeout);
+	if (!mSocket.isEncrypted()) {
+		panic(mSocket.errorString());
+		return;
+	}
 	changeState(Connected);
 	
 	// Nos autenticamos
@@ -90,18 +106,30 @@ void Client::performInteraction()
 		qint64 bytesWritten;
 		bytesWritten = mSocket.write(static_cast<const char*>(authRequest.data()), Message::MESSAGE_SIZE);
 		if (bytesWritten != Message::MESSAGE_SIZE) {
-			panic(Unknown);
+			panic(IncompleteWrite);
 			return;
 		}
 			
 		changeState(AuthSent);
-		receive(incomingBuffer, Timeout);
-		Message authResponse = Message::createMessage(incomingBuffer);
-		if (authResponse.type() != Message::Type::OK) {
-			panic(Client::BadPassword);
+		if (!receive(incomingBuffer, Timeout)) {
+			panic(ResponseTimeout);
 			return;
 		}
-		changeState(AuthOk); 
+			
+		Message authResponse = Message::createMessage(incomingBuffer);
+		
+		switch (authResponse.type())
+		{
+		case Message::OK:
+			changeState(AuthOk); 
+			break;
+		default:
+			break;
+		}
+
+		if (authResponse.type() != Message::Type::OK) {
+			return;
+		}
 	}
 
 	// Mandamos la solicitud
@@ -158,10 +186,9 @@ void Client::performInteraction()
 
 void Client::disconnect()
 {
-	if (mSocket.isOpen())
+	if (mSocket.isOpen()) {
 		mSocket.close();
-	
-	mSocket.waitForDisconnected();
+	}
 	changeState(Disconnected);
 }
 
@@ -171,11 +198,20 @@ void Client::panic(Client::Error reason)
 	disconnect();
 }
 
-bool Client::receive(void *data, uint8_t Timeout)
+void Client::panic(QString reason)
 {
-	// TODO
-	#warning No implementado
-	return false;
+	emit errorOccurred(reason);
+	disconnect();
+}
+
+bool Client::receive(void *data, uint16_t timeoutTime)
+{
+	if (mSocket.waitForReadyRead(timeoutTime)) {
+		mSocket.read(static_cast<char*>(data), Message::MESSAGE_SIZE);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void Client::changeState(State newState)

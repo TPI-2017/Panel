@@ -22,13 +22,14 @@ public:
 	enum State {
 		NotReady,
 		Disconnected,
+		Connecting,
 		Connected,
 		AuthSent,
 		AuthOk,
 		RequestSent,
 		ResponseReceived
 	};
-	Q_ENUM(State)
+	Q_ENUM(Client::State)
 
 	enum Error
 	{
@@ -38,14 +39,16 @@ public:
 		CertificateMissing,
 		ResponseTimeout,
 		WrongResponse,
+		IncompleteWrite,
 		Unknown
 	};
-	Q_ENUM(Error)
+	Q_ENUM(Client::Error)
 
 	void setHostname(QString hostname);
 	void setWorkingPassword(QString password);
 
 public slots:
+	void init();
 	void setText(QString text, uint8_t blinkRate, uint8_t slideRate);
 	void getText();
 	void setPassword(QString password);
@@ -55,7 +58,7 @@ public slots:
 signals:
 	void textChanged(QString text);
 	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
-	void errorOccurred(Error error);
+	void errorOccurred(Client::Error error);
 	void errorOccurred(QString error);
 	void stateChanged(State state);
 
@@ -66,9 +69,9 @@ private:
 	void disconnect();
 	void panic(Error reason);
 	void panic(QString reason);
-	bool receive(void *data, uint8_t Timeout);
+	bool receive(void *data, uint16_t Timeout);
 
-	static constexpr uint8_t Timeout = 5;
+	static constexpr uint16_t Timeout = 5000;
 	QSslSocket mSocket;
 	QString mPassword;
 	QString mHostname;
@@ -78,4 +81,4 @@ private:
 	Message mResponseMessage;
 };
 
-#endif // CLIENT_H
+#endif

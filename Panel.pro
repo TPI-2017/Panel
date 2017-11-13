@@ -57,4 +57,5 @@ FORMS += \
         panel.ui
 
 RESOURCES += \
-    translations.qrc
+    translations.qrc \
+    ssl.qrc

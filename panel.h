@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QApplication>
+#include <QThread>
 #include "client.h"
 
 namespace Ui {
@@ -15,9 +16,16 @@ class Panel : public QMainWindow
 public:
 	explicit Panel(QWidget *parent = 0);
 	~Panel();
+	void init();
 
 signals:
 	void disconnect();
+
+public slots:
+	void textChanged(QString text);
+	void stateChanged(Client::State state);
+	void errorOccurred(Client::Error error);
+	void errorOccurred(QString error);
 
 private slots:
 	void on_applyButton_clicked();
@@ -28,8 +36,11 @@ private slots:
 	void on_actionAbout_triggered();
 	void on_actionChange_token_triggered();
 private:
+	void requestViewUpdate();
+
 	Ui::Panel *ui;
 	Client *mClient;
+	QThread *mClientThread;
 };
 
 #endif // PANEL_H
