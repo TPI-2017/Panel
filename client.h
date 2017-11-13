@@ -8,6 +8,8 @@
 #include <QSslCertificate>
 #include <QHostAddress>
 #include "protocol/Message.h"
+#include "connection.h"
+#include "signmodel.h"
 
 // Esta clase maneja todas las interacciones con el cartel. Tiene slots para
 // iniciar una interacción y señales para indicar el resultado.
@@ -24,8 +26,6 @@ public:
 		Disconnected,
 		Connecting,
 		Connected,
-		AuthSent,
-		AuthOk,
 		RequestSent,
 		ResponseReceived
 	};
@@ -44,41 +44,33 @@ public:
 	};
 	Q_ENUM(Client::Error)
 
-	void setHostname(QString hostname);
-	void setWorkingPassword(QString password);
-
 public slots:
-	void init();
-	void setText(QString text, uint8_t blinkRate, uint8_t slideRate);
-	void getText();
-	void setPassword(QString password);
+	void setHostname(QString hostname);
+	
+	void setWorkingPassword(QString password);
+	
+	// Aplica los cambios del modelo actual al cartel.
+	void apply();
+	// Actuaiza el modelo con el estado actual del cartel.
+	void restore();
+	// Estos getters actualizan el modelo. No mandan cambios al cartel.
+	void setText(QString text, float blinkRate, float slideRate);
 	void setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
-	void getWifiConfig();
-
 signals:
-	void textChanged(QString text);
-	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
-	void errorOccurred(Client::Error error);
-	void errorOccurred(QString error);
 	void stateChanged(State state);
-
+	void errorOccurred(Error error, QString errorString);
+	void passwordRequired();
+	void interactionFinished();
 private:
-	void loadLocalCertificate();
-	void changeState(State newState);
-	void performInteraction();
-	void disconnect();
-	void panic(Error reason);
-	void panic(QString reason);
-	bool receive(void *data, uint16_t Timeout);
-
-	static constexpr uint16_t Timeout = 5000;
-	QSslSocket mSocket;
-	QString mPassword;
-	QString mHostname;
-	QSslCertificate mCertificate;
+	SignModel mSignModel;
+	Connection mConnection;
 	State mState;
-	Message mRequestMessage;
-	Message mResponseMessage;
+	QString mHostname;
+	QString mPassword;
+	
+	void changeState(State state);
+	void performInteraction(Message &request);
+	void handleResponse(const Message &response);
 };
 
 #endif

@@ -44,14 +44,18 @@ SOURCES += \
 	controller.cpp \
 	client.cpp \
 	login_dialog.cpp \
-	protocol/Message.cpp
+	protocol/Message.cpp \
+    signmodel.cpp \
+    connection.cpp
 
 HEADERS += \
 	panel.h \
 	translation.h \
 	controller.h \
 	login_dialog.h \
-	client.h
+	client.h \
+    signmodel.h \
+    connection.h
 
 FORMS += \
         panel.ui
