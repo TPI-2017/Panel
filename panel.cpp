@@ -28,24 +28,13 @@ void Panel::init()
 	mClient->setWorkingPassword(loginDialog->getPassword());
 	
 	mClient->moveToThread(mClientThread);
-	connect(mClient, &Client::textChanged, this, &Panel::textChanged, Qt::BlockingQueuedConnection);
-	connect(mClient, &Client::stateChanged, this, &Panel::stateChanged, Qt::BlockingQueuedConnection);
-	connect(mClient, SIGNAL(errorOccurred(QString)), this, SLOT(errorOccurred(QString)), Qt::BlockingQueuedConnection);
-	connect(mClient, SIGNAL(errorOccurred(Client::Error)), this, SLOT(errorOccurred(Client::Error)), Qt::BlockingQueuedConnection);
 
-	QMetaObject::invokeMethod(mClient, "init", Qt::QueuedConnection);
 	mClientThread->start();
-	requestViewUpdate();
 }
 
 Panel::~Panel()
 {
 	delete ui;
-}
-
-void Panel::requestViewUpdate()
-{
-	QMetaObject::invokeMethod(mClient, "getText", Qt::QueuedConnection);
 }
 
 void Panel::on_applyButton_clicked()
@@ -93,39 +82,6 @@ void Panel::textChanged(QString text)
 	ui->textMessageField->setPlainText(text);
 }
 
-void Panel::stateChanged(Client::State state)
-{
-	QString text;
-	switch (state) {
-	case Client::NotReady:
-		text = tr("Not ready.");
-		break;		
-	case Client::Disconnected:
-		text = tr("Ready.");
-		break;		
-	case Client::Connecting:
-		text = tr("Establishing connection.");
-		break;		
-	case Client::Connected:
-		text = tr("Connection established.");
-		break;		
-	case Client::AuthSent:
-		text = tr("Authentication request sent.");
-		break;		
-	case Client::AuthOk:
-		text = tr("Authenticated");
-		break;		
-	case Client::RequestSent:
-		text = tr("Request sent.");
-		break;		
-	case Client::ResponseReceived:
-		text = tr("Response received.");
-		break;		
-	}
-	
-	this->setEnabled(state == Client::Disconnected);
-	ui->statusBar->showMessage(text);
-}
 
 void Panel::errorOccurred(Client::Error error)
 {

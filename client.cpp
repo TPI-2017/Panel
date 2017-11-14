@@ -3,7 +3,6 @@
 #include <QHostAddress>
 
 Client::Client()
-:  
 {
 	qRegisterMetaType<Client::State>("Client::State");
 	qRegisterMetaType<Client::Error>("Client::Error");

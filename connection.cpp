@@ -38,8 +38,10 @@ bool Connection::receive(Message &msg)
 
 void Connection::disconnect()
 {
-	mSocket.close();
-	mSocket.waitForDisconnected(TIMEOUT_MS);
+	if (mSocket.isOpen()) {
+		mSocket.close();
+		mSocket.waitForDisconnected(TIMEOUT_MS);
+	}
 }
 
 QString Connection::lastError()

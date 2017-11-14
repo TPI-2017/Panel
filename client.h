@@ -69,7 +69,7 @@ private:
 	QString mPassword;
 	
 	void changeState(State state);
-	void performInteraction(Message &request);
+	void performInteraction(const Message &request);
 	void handleResponse(const Message &response);
 };
 

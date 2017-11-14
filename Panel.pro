@@ -36,6 +36,7 @@ macx {
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+QMAKE_CXXFLAGS += -fno-strict-aliasing
 
 SOURCES += \
         main.cpp \
@@ -45,8 +46,8 @@ SOURCES += \
 	client.cpp \
 	login_dialog.cpp \
 	protocol/Message.cpp \
-    signmodel.cpp \
-    connection.cpp
+	signmodel.cpp \
+	connection.cpp
 
 HEADERS += \
 	panel.h \
@@ -54,8 +55,9 @@ HEADERS += \
 	controller.h \
 	login_dialog.h \
 	client.h \
-    signmodel.h \
-    connection.h
+	protocol/Message.h \
+	signmodel.h \
+	connection.h
 
 FORMS += \
         panel.ui

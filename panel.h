@@ -23,7 +23,7 @@ signals:
 
 public slots:
 	void textChanged(QString text);
-	void stateChanged(Client::State state);
+	// void stateChanged(Client::State state);
 	void errorOccurred(Client::Error error);
 	void errorOccurred(QString error);
 
