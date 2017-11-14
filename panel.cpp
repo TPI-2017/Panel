@@ -16,6 +16,16 @@ Panel::Panel(QWidget *parent)
 void Panel::init()
 {
 	show();
+	
+	mClient->moveToThread(mClientThread);
+	QObject::connect(this, &Panel::applyRequested, mClient, &Client::apply);
+	QObject::connect(this, &Panel::restoreRequested, mClient, &Client::restore);
+	QObject::connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
+	QObject::connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
+	QObject::connect(mClient, &Client::done, this, &Panel::clientDone);
+
+	mClientThread->start();
+	
 	LoginDialog *loginDialog = new LoginDialog(this);
 	int result = loginDialog->exec();
 	
@@ -23,13 +33,10 @@ void Panel::init()
 		close();
 		return;
 	}
+	emit hostnameChanged(loginDialog->getHostname());
+	emit passwordChanged(loginDialog->getPassword());
 	
-	mClient->setHostname(loginDialog->getHostname());
-	mClient->setWorkingPassword(loginDialog->getPassword());
-	
-	mClient->moveToThread(mClientThread);
-
-	mClientThread->start();
+	restoreSettings();
 }
 
 Panel::~Panel()
@@ -39,6 +46,7 @@ Panel::~Panel()
 
 void Panel::on_applyButton_clicked()
 {
+	this->setEnabled(false);
 }
 
 void Panel::on_actionQuit_triggered()
@@ -82,8 +90,28 @@ void Panel::textChanged(QString text)
 	ui->textMessageField->setPlainText(text);
 }
 
+void Panel::restoreSettings()
+{
+	this->setEnabled(false);
+	this->statusBar()->showMessage(tr("Busy"));
+	emit restoreRequested();
+}
 
-void Panel::errorOccurred(Client::Error error)
+void Panel::applySettings()
+{
+	this->setEnabled(false);
+	this->statusBar()->showMessage(tr("Busy"));
+	emit applyRequested();
+}
+
+void Panel::clientDone(Client::ClientError status)
+{
+	this->setEnabled(true);
+	this->statusBar()->showMessage(tr("Ready"));
+	// TODO: manejar cuando status != Ok
+}
+
+void Panel::errorOccurred(Client::ClientError error)
 {
 	QString errorMessage;
 	switch (error) {

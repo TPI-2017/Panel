@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
 	Panel w;
 	w.init();
 	
-	
-	
 	Translation::translate();
 	return a.exec();
 }

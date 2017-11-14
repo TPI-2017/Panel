@@ -17,7 +17,7 @@ public:
 		CertificateLoadFailed,
 		Other
 	};
-	Q_ENUM(Error)
+	Q_ENUM(Connection::Error)
 	
 	QString lastError();
 public slots:

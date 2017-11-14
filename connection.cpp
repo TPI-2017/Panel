@@ -3,7 +3,7 @@
 
 Connection::Connection()
 {
-	qRegisterMetaType<Connection::Error>("Client::Error");
+	qRegisterMetaType<Connection::Error>("Connection::Error");
 	loadLocalCertificate();
 }
 

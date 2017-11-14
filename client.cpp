@@ -1,20 +1,60 @@
 #include "client.h"
 #include <stdint.h>
 #include <QHostAddress>
+#include <QThread>
+
+static uint8_t toFixedPoint(float n)
+{
+	#warning No implementado
+	return 0;
+}
+
+static uint8_t toFloatingPoint(uint8_t n)
+{
+	#warning No implementado
+	return 0;
+}
 
 Client::Client()
 {
-	qRegisterMetaType<Client::State>("Client::State");
-	qRegisterMetaType<Client::Error>("Client::Error");
+	qRegisterMetaType<State>("State");
+	qRegisterMetaType<ClientError>("ClientError");
 }
 
 void Client::apply()
 {
+	if (mSignModel.dirty())	{
+		QString text = mSignModel.text();
+		QString ssid = mSignModel.wifiSSID();
+		QString password = mSignModel.wifiPassword();
+		QHostAddress ip = mSignModel.wifiIP();
+		QHostAddress subnet = mSignModel.wifiSubnetMask();
+		uint8_t br = toFixedPoint(mSignModel.blinkRate());
+		uint8_t sr = toFixedPoint(mSignModel.blinkRate());
+		
+		Message textMsg;
+		textMsg = Message::createSetTextRequest	(
+							mPassword.toStdString().data(),
+							br,
+							sr,
+							text.toStdString().data()
+							);
+		Message wifiMsg;
+		wifiMsg = Message::createSetWifiConfigRequest	(
+								mPassword.toStdString().data(),
+								ssid.toStdString().data(),
+								password.toStdString().data(),
+								ip.toIPv4Address(),
+								subnet.toIPv4Address()
+								);
+	}
+	emit done(Ok);
 }
 
 void Client::restore()
 {
-
+	QThread::sleep(3);
+	emit done(Ok);
 }
 
 void Client::setText(QString text, float blinkRate, float slideRate)
@@ -60,7 +100,6 @@ void Client::performInteraction(const Message &request)
 	}
 	
 	mConnection.disconnect();
-	emit interactionFinished();
 }
 
 void Client::handleResponse(const Message &response)

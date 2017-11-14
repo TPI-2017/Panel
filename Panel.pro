@@ -46,7 +46,6 @@ SOURCES += \
 	client.cpp \
 	login_dialog.cpp \
 	protocol/Message.cpp \
-	signmodel.cpp \
 	connection.cpp
 
 HEADERS += \

@@ -31,8 +31,9 @@ public:
 	};
 	Q_ENUM(Client::State)
 
-	enum Error
+	enum ClientError
 	{
+		Ok,
 		BadPassword,
 		BadWifiConfig,
 		BadTextEncoding,
@@ -42,7 +43,7 @@ public:
 		IncompleteWrite,
 		Unknown
 	};
-	Q_ENUM(Client::Error)
+	Q_ENUM(Client::ClientError)
 
 public slots:
 	void setHostname(QString hostname);
@@ -58,9 +59,8 @@ public slots:
 	void setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
 signals:
 	void stateChanged(State state);
-	void errorOccurred(Error error, QString errorString);
-	void passwordRequired();
-	void interactionFinished();
+	void errorOccurred(QString errorString);
+	void done(ClientError status);
 private:
 	SignModel mSignModel;
 	Connection mConnection;

@@ -19,13 +19,16 @@ public:
 	void init();
 
 signals:
-	void disconnect();
+	void applyRequested();
+	void restoreRequested();
+	void hostnameChanged(QString);
+	void passwordChanged(QString);
 
 public slots:
 	void textChanged(QString text);
-	// void stateChanged(Client::State state);
-	void errorOccurred(Client::Error error);
+	void errorOccurred(Client::ClientError error);
 	void errorOccurred(QString error);
+	void clientDone(Client::ClientError);
 
 private slots:
 	void on_applyButton_clicked();
@@ -36,7 +39,8 @@ private slots:
 	void on_actionAbout_triggered();
 	void on_actionChange_token_triggered();
 private:
-	void requestViewUpdate();
+	void applySettings();
+	void restoreSettings();
 
 	Ui::Panel *ui;
 	Client *mClient;
