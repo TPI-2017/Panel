@@ -5,12 +5,50 @@
 #include <QString>
 #include <QHostAddress>
 
+template<typename T>
+class Field
+{
+public:
+	const T& get() const
+	{
+		return mObject;
+	};
+
+	bool update(const T &newValue)
+	{
+		bool equal = mObject == newValue;
+		committed = committed && equal;
+		mObject = newValue;
+		return !equal;
+	};
+
+	void commit()
+	{
+		committed = true;
+	};
+
+private:
+	bool committed = false;
+	T mObject;
+};
+
 class SignModel : public QObject
 {
 	Q_OBJECT
 public:
 	explicit SignModel(QObject *parent = 0);
 	
+	void commit()
+	{
+		mText.commit();
+		mWifiSSID.commit();
+		mWifiPassword.commit();
+		mWifiIP.commit();
+		mWifiSubnetMask.commit();
+		mBlinkRate.commit();
+		mSlideRate.commit();
+	};
+
 signals:
 	void textChanged(QString);
 	void wifiSSIDChanged(QString);
@@ -23,68 +61,54 @@ signals:
 public slots:
 	void setText(QString text)
 	{
-		bool changed = mText != text;
-		mText = text;
-		if (changed)
+		if(mText.update(text))
 			emit textChanged(text);
 	};
 
 	void setWifiSSID(QString ssid)
 	{
-		bool changed = mWifiSSID != ssid;
-		mWifiSSID = ssid;
-		if (changed)
+		if(mWifiSSID.update(ssid))
 			emit wifiSSIDChanged(ssid);
 	};
 
 	void setWifiPassword(QString password)
 	{
-		bool changed = mWifiPassword != password;
-		mWifiPassword = password;
-		if (changed)
+		if(mWifiPassword.update(password))
 			emit wifiPasswordChanged(password);
 	};
 	
 	void setWifiIP(QHostAddress ip)
 	{
-		bool changed = mWifiIP != ip;
-		mWifiIP = ip;
-		if (changed)
-			emit wifiIPChanged(mWifiIP);
+		if(mWifiIP.update(ip))
+			emit wifiIPChanged(ip);
 	}
 
 	void setWifiSubnetMask(QHostAddress subnetMask)
 	{
-		bool changed = mWifiSubnetMask != subnetMask;
-		mWifiSubnetMask = subnetMask;
-		if (changed)
-			emit wifiSubnetMaskChanged(mWifiIP);
+		if(mWifiSubnetMask.update(subnetMask))
+			emit wifiSubnetMaskChanged(subnetMask);
 	}
 
 	void setBlinkRate(float blinkRate)
 	{
-		bool changed = mBlinkRate != blinkRate;
-		mBlinkRate = blinkRate;
-		if (changed)
+		if(mBlinkRate.update(blinkRate))
 			emit blinkRateChanged(blinkRate);
 	};
 
 	void setSlideRate(float slideRate)
 	{
-		bool changed = mSlideRate != slideRate;
-		mSlideRate = slideRate;	
-		if (changed)
+		if(mSlideRate.update(slideRate))
 			emit slideRateChanged(slideRate);
 	};
 
 private:
-	QString mText;
-	QString mWifiSSID;
-	QString mWifiPassword;
-	QHostAddress mWifiIP;
-	QHostAddress mWifiSubnetMask;
-	float mBlinkRate;
-	float mSlideRate;
+	Field<QString> mText;
+	Field<QString> mWifiSSID;
+	Field<QString> mWifiPassword;
+	Field<QHostAddress> mWifiIP;
+	Field<QHostAddress> mWifiSubnetMask;
+	Field<float> mBlinkRate;
+	Field<float> mSlideRate;
 };
 
-#endif // SIGNMODEL_H
+#endif
