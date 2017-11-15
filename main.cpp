@@ -2,7 +2,7 @@
 #include "panel.h"
 #include <QApplication>
 #include <QMessageBox>
-#include <Connection.h>
+#include <connection.h>
 #include <iostream>
 
 static void checkSslSupport()

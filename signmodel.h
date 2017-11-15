@@ -116,7 +116,7 @@ public slots:
 			mDirty = true;
 			emit textChanged(text);
 		}
-	};
+    }
 
 	void setWifiSSID(QString ssid)
 	{
@@ -124,7 +124,7 @@ public slots:
 			mDirty = true;
 			emit wifiSSIDChanged(ssid);
 		}
-	};
+    }
 
 	void setWifiPassword(QString password)
 	{
@@ -132,15 +132,15 @@ public slots:
 			mDirty = true;
 			emit wifiPasswordChanged(password);
 		}
-	};
+    }
 	
 	void setWifiIP(QHostAddress ip)
-	{;
+    {
 		if(mWifiIP.update(ip)) {
 			mDirty = true;
 			emit wifiIPChanged(ip);
 		}
-	};
+    }
 
 	void setWifiSubnetMask(QHostAddress subnetMask)
 	{
@@ -148,7 +148,7 @@ public slots:
 			mDirty = true;
 			emit wifiSubnetMaskChanged(subnetMask);
 		}
-	};
+    }
 
 	void setBlinkRate(float blinkRate)
 	{
@@ -156,7 +156,7 @@ public slots:
 			mDirty = true;
 			emit blinkRateChanged(blinkRate);
 		}
-	};
+    }
 
 	void setSlideRate(float slideRate)
 	{
@@ -164,7 +164,18 @@ public slots:
 			mDirty = true;
 			emit slideRateChanged(slideRate);
 		}
-	};
+    }
+
+    void emitValues()
+    {
+        emit textChanged(mText.get());
+        emit wifiSSIDChanged(mWifiSSID.get());
+        emit wifiPasswordChanged(mWifiPassword.get());
+        emit wifiIPChanged(mWifiIP.get());
+        emit wifiSubnetMaskChanged(mWifiSubnetMask.get());
+        emit blinkRateChanged(mBlinkRate.get());
+        emit slideRateChanged(mSlideRate.get());
+    }
 	
 
 private:

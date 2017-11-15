@@ -19,8 +19,8 @@ LoginDialog::LoginDialog(QWidget *parent)
 	formLayout->addRow(new QLabel(tr("Host:")), mHostnameField);
 	formLayout->addRow(new QLabel(tr("Password:")), mPasswordField);
 	
-	connect(mButtons, &QDialogButtonBox::accepted, this, QDialog::accept);
-	connect(mButtons, &QDialogButtonBox::rejected, this, QDialog::reject);
+    connect(mButtons, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(mButtons, &QDialogButtonBox::rejected, this, &QDialog::reject);
 	
 	mPasswordField->setEchoMode(QLineEdit::Password);
 }

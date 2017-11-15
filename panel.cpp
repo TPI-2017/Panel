@@ -15,6 +15,7 @@ Panel::Panel(QWidget *parent)
 
 void Panel::init()
 {
+    on_textMessageField_textChanged();
 	show();
 	
 	mClient->moveToThread(mClientThread);
@@ -197,4 +198,9 @@ void Panel::clientStateChanged(Client::State state)
 	}
 
 	this->statusBar()->showMessage(text);
+}
+
+void Panel::on_textMessageField_textChanged()
+{
+    ui->remainingChars->setText(QString::number(Message::TEXT_SIZE - ui->textMessageField->toPlainText().length()));
 }
