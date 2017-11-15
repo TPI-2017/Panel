@@ -10,7 +10,7 @@ class Connection : public QObject
 {
 	Q_OBJECT
 public:
-	Connection();
+	explicit Connection(QObject *parent);
 
 	enum Error {
 		Timeout,
@@ -19,7 +19,7 @@ public:
 	};
 	Q_ENUM(Connection::Error)
 	
-	QString lastError();
+	QAbstractSocket::SocketError lastError();
 public slots:
 	bool connect(const QString hostname);
 	void disconnect();

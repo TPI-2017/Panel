@@ -25,10 +25,12 @@ signals:
 	void passwordChanged(QString);
 
 public slots:
+	// Slots de actualización del modelo
 	void textChanged(QString text);
-	void errorOccurred(Client::ClientError error);
-	void errorOccurred(QString error);
+	// Slot para cuando se termina una operación
 	void clientDone(Client::ClientError);
+	void clientStateChanged(Client::State);
+	void errorOccurred(Client::ClientError);
 
 private slots:
 	void on_applyButton_clicked();
@@ -41,6 +43,7 @@ private slots:
 private:
 	void applySettings();
 	void restoreSettings();
+	void errorOccurred(QString);
 
 	Ui::Panel *ui;
 	Client *mClient;

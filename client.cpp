@@ -5,17 +5,42 @@
 
 static uint8_t toFixedPoint(float n)
 {
-	#warning No implementado
 	return 0;
 }
 
 static uint8_t toFloatingPoint(uint8_t n)
 {
-	#warning No implementado
 	return 0;
 }
 
+Client::ClientError Client::toClientError(QAbstractSocket::SocketError error)
+{
+	switch (error)
+	{
+	case QAbstractSocket::ConnectionRefusedError:
+		return ConnectionRefused;
+	case QAbstractSocket::RemoteHostClosedError:
+		return RemoteHostClosed;
+	case QAbstractSocket::HostNotFoundError:
+		return HostNotFound;
+	case QAbstractSocket::NetworkError:
+		return NetworkError;
+	case QAbstractSocket::SslHandshakeFailedError:
+		return SslHandshakeFailed;
+	case QAbstractSocket::SslInternalError:
+		return SslInternalError;
+	case QAbstractSocket::SslInvalidUserDataError:
+		return SslInvalidData;
+	case QAbstractSocket::SocketTimeoutError:
+		return Timeout;
+	default:
+		return Unknown;
+	}
+}
+
 Client::Client()
+: mSignModel(this),
+  mConnection(this)
 {
 	qRegisterMetaType<State>("State");
 	qRegisterMetaType<ClientError>("ClientError");
@@ -23,6 +48,7 @@ Client::Client()
 
 void Client::apply()
 {
+	ClientError result = Ok;
 	if (mSignModel.dirty())	{
 		QString text = mSignModel.text();
 		QString ssid = mSignModel.wifiSSID();
@@ -47,13 +73,18 @@ void Client::apply()
 								ip.toIPv4Address(),
 								subnet.toIPv4Address()
 								);
+		result = performInteraction(textMsg);
+		if (result == Ok)
+			result = performInteraction(wifiMsg);
+
 	}
-	emit done(Ok);
+	emit done(result);
 }
 
 void Client::restore()
 {
-	QThread::sleep(3);
+	#warning No implementado
+	QThread::sleep(1);
 	emit done(Ok);
 }
 
@@ -82,28 +113,40 @@ void Client::setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, 
 	mSignModel.setWifiSubnetMask(subnetMask);
 }
 
-void Client::performInteraction(const Message &request)
+Client::ClientError Client::performInteraction(const Message &request)
 {
+	ClientError result;
+	changeState(Connecting);
 	if (mConnection.connect(mHostname)) {
+		changeState(Connected);
 		if (mConnection.send(request)) {
+			changeState(RequestSent);
 			Message response;
 			if(mConnection.receive(response)) {
-				handleResponse(response);
+				changeState(ResponseReceived);
+				result = handleResponse(response);
 			} else {
-				// TODO manejar fallo de recepción
+				result = toClientError(mConnection.lastError());
 			}
 		} else {
-			// TODO manejar fallo de transmisión
+			result = toClientError(mConnection.lastError());
 		}
 	} else {
-		// TODO manejar fallo de conexión	
+		result = toClientError(mConnection.lastError());
 	}
 	
 	mConnection.disconnect();
+	changeState(Disconnected);
+	return result;
 }
 
-void Client::handleResponse(const Message &response)
+Client::ClientError Client::handleResponse(const Message &response)
 {
-	// TODO: aca se maneja cualquier respuesta negativa del micro
+	return Ok;
+}
 
+void Client::changeState(State state)
+{
+	mState = state;
+	emit stateChanged(mState);
 }

@@ -23,6 +23,7 @@ void Panel::init()
 	QObject::connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
 	QObject::connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
 	QObject::connect(mClient, &Client::done, this, &Panel::clientDone);
+	QObject::connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
 
 	mClientThread->start();
 	
@@ -46,7 +47,7 @@ Panel::~Panel()
 
 void Panel::on_applyButton_clicked()
 {
-	this->setEnabled(false);
+	applySettings();
 }
 
 void Panel::on_actionQuit_triggered()
@@ -100,7 +101,6 @@ void Panel::restoreSettings()
 void Panel::applySettings()
 {
 	this->setEnabled(false);
-	this->statusBar()->showMessage(tr("Busy"));
 	emit applyRequested();
 }
 
@@ -108,7 +108,9 @@ void Panel::clientDone(Client::ClientError status)
 {
 	this->setEnabled(true);
 	this->statusBar()->showMessage(tr("Ready"));
-	// TODO: manejar cuando status != Ok
+	if (status != Client::Ok)
+		errorOccurred(status);
+	// TODO: considerar especialmente el caso de contraseña incorrecta
 }
 
 void Panel::errorOccurred(Client::ClientError error)
@@ -127,13 +129,35 @@ void Panel::errorOccurred(Client::ClientError error)
 	case Client::CertificateMissing:
 		errorMessage = tr("Failed to load TLS certificate.");
 		break;
-	case Client::ResponseTimeout:
+	case Client::Timeout:
 		errorMessage = tr("Connection timed out.");
 		break;
 	case Client::WrongResponse:
 		errorMessage = tr("Received invalid response.");
 		break;
+	case Client::ConnectionRefused:
+		errorMessage = tr("Connection refused by host.");
+		break;
+	case Client::RemoteHostClosed:
+		errorMessage = tr("Remote host closed connection unexpectedly.");
+		break;
+	case Client::HostNotFound:
+		errorMessage = tr("Host not found.");
+		break;
+	case Client::NetworkError:
+		errorMessage = tr("Network error.");
+		break;
+	case Client::SslHandshakeFailed:
+		errorMessage = tr("Received invalid response.");
+		break;
+	case Client::SslInternalError:
+		errorMessage = tr("TLS internal error.");
+		break;
+	case Client::SslInvalidData:
+		errorMessage = tr("Invalid TLS user data.");
+		break;
 	case Client::Unknown:
+	default:
 		errorMessage = tr("Unknown error.");
 		break;
 	}
@@ -144,4 +168,33 @@ void Panel::errorOccurred(QString error)
 {
 	QMessageBox messageBox(QMessageBox::Critical, tr("An error occurred"), error, QMessageBox::Ok, this);
 	messageBox.exec();
+}
+
+void Panel::clientStateChanged(Client::State state)
+{
+	QString text;
+	switch (state) {
+	case Client::NotReady:
+		text = tr("Not ready.");
+		break;
+	case Client::Disconnected:
+		text = tr("Ready.");
+		break;
+	case Client::Connecting:
+		text = tr("Connecting to host...");
+		break;
+	case Client::Connected:
+		text = tr("Connected.");
+		break;
+	case Client::RequestSent:
+		text = tr("Waiting for response...");
+		break;
+	case Client::ResponseReceived:
+		text = tr("ResponseReceived.");
+		break;
+	default:
+		break;
+	}
+
+	this->statusBar()->showMessage(text);
 }

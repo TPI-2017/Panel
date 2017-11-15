@@ -175,7 +175,7 @@ private:
 	Field<QHostAddress> mWifiSubnetMask;
 	Field<float> mBlinkRate;
 	Field<float> mSlideRate;
-	bool mDirty = false;
+	bool mDirty = true;
 };
 
 #endif

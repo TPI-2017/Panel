@@ -38,9 +38,16 @@ public:
 		BadWifiConfig,
 		BadTextEncoding,
 		CertificateMissing,
-		ResponseTimeout,
+		Timeout,
 		WrongResponse,
 		IncompleteWrite,
+		ConnectionRefused,
+		RemoteHostClosed,
+		HostNotFound,
+		NetworkError,
+		SslHandshakeFailed,
+		SslInternalError,
+		SslInvalidData,
 		Unknown
 	};
 	Q_ENUM(Client::ClientError)
@@ -52,7 +59,7 @@ public slots:
 	
 	// Aplica los cambios del modelo actual al cartel.
 	void apply();
-	// Actuaiza el modelo con el estado actual del cartel.
+	// Actualiza el modelo con el estado actual del cartel.
 	void restore();
 	// Estos getters actualizan el modelo. No mandan cambios al cartel.
 	void setText(QString text, float blinkRate, float slideRate);
@@ -69,8 +76,9 @@ private:
 	QString mPassword;
 	
 	void changeState(State state);
-	void performInteraction(const Message &request);
-	void handleResponse(const Message &response);
+	ClientError performInteraction(const Message &request);
+	ClientError handleResponse(const Message &response);
+	ClientError toClientError(QAbstractSocket::SocketError error);
 };
 
 #endif

@@ -1,7 +1,9 @@
 #include "connection.h"
 #include <cassert>
 
-Connection::Connection()
+Connection::Connection(QObject *parent)
+: QObject(parent),
+  mSocket(this)
 {
 	qRegisterMetaType<Connection::Error>("Connection::Error");
 	loadLocalCertificate();
@@ -44,9 +46,9 @@ void Connection::disconnect()
 	}
 }
 
-QString Connection::lastError()
+QAbstractSocket::SocketError Connection::lastError()
 {
-	return mSocket.errorString();
+	return mSocket.error();
 }
 
 void Connection::loadLocalCertificate()
