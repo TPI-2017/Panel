@@ -1,7 +1,9 @@
 #include "client.h"
 #include <stdint.h>
 #include <QHostAddress>
+#include <iostream>
 #include <QThread>
+#include <iostream>
 
 static uint8_t toFixedPoint(float n)
 {
@@ -15,6 +17,7 @@ static uint8_t toFloatingPoint(uint8_t n)
 
 Client::ClientError Client::toClientError(QAbstractSocket::SocketError error)
 {
+	std::cerr << error << std::endl;
 	switch (error)
 	{
 	case QAbstractSocket::ConnectionRefusedError:
@@ -50,32 +53,42 @@ void Client::apply()
 {
 	ClientError result = Ok;
 	if (mSignModel.dirty())	{
-		QString text = mSignModel.text();
-		QString ssid = mSignModel.wifiSSID();
-		QString password = mSignModel.wifiPassword();
-		QHostAddress ip = mSignModel.wifiIP();
-		QHostAddress subnet = mSignModel.wifiSubnetMask();
-		uint8_t br = toFixedPoint(mSignModel.blinkRate());
-		uint8_t sr = toFixedPoint(mSignModel.blinkRate());
-		
-		Message textMsg;
-		textMsg = Message::createSetTextRequest	(
-							mPassword.toStdString().data(),
-							br,
-							sr,
-							text.toStdString().data()
-							);
-		Message wifiMsg;
-		wifiMsg = Message::createSetWifiConfigRequest	(
+		changeState(Connecting);
+		if (mConnection.connect(mHostname)) {
+			changeState(Connected);
+			QString text = mSignModel.text();
+			QString ssid = mSignModel.wifiSSID();
+			QString password = mSignModel.wifiPassword();
+			QHostAddress ip = mSignModel.wifiIP();
+			QHostAddress subnet = mSignModel.wifiSubnetMask();
+			uint8_t br = toFixedPoint(mSignModel.blinkRate());
+			uint8_t sr = toFixedPoint(mSignModel.blinkRate());
+			
+			Message textMsg;
+			textMsg = Message::createSetTextRequest	(
 								mPassword.toStdString().data(),
-								ssid.toStdString().data(),
-								password.toStdString().data(),
-								ip.toIPv4Address(),
-								subnet.toIPv4Address()
+								br,
+								sr,
+								text.toStdString().data()
 								);
-		result = performInteraction(textMsg);
-		if (result == Ok)
-			result = performInteraction(wifiMsg);
+			Message wifiMsg;
+			wifiMsg = Message::createSetWifiConfigRequest	(
+									mPassword.toStdString().data(),
+									ssid.toStdString().data(),
+									password.toStdString().data(),
+									ip.toIPv4Address(),
+									subnet.toIPv4Address()
+									);
+			result = performInteraction(textMsg);
+			if (result == Ok)
+				result = performInteraction(wifiMsg);
+				
+		} else {
+			result = toClientError(mConnection.lastError());
+		}
+		
+		mConnection.disconnect();
+		changeState(Disconnected);
 
 	}
 	emit done(result);
@@ -83,9 +96,28 @@ void Client::apply()
 
 void Client::restore()
 {
-	#warning No implementado
-	QThread::sleep(1);
-	emit done(Ok);
+	ClientError result;
+	changeState(Connecting);
+	if (mConnection.connect(mHostname)) {
+		changeState(Connected);
+		
+		Message getTextMsg;
+		getTextMsg = Message::createGetTextRequest(mPassword.toStdString().data());
+		result = performInteraction(getTextMsg);
+
+		if (result == Ok) {
+			Message getWifiMsg;
+			getWifiMsg = Message::createGetWifiConfigRequest(mPassword.toStdString().data());
+			result = performInteraction(getWifiMsg);
+		}
+			
+	} else {
+		result = toClientError(mConnection.lastError());
+	}
+	
+	mConnection.disconnect();
+	changeState(Disconnected);
+	emit done(result);
 }
 
 void Client::setText(QString text, float blinkRate, float slideRate)
@@ -116,32 +148,56 @@ void Client::setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, 
 Client::ClientError Client::performInteraction(const Message &request)
 {
 	ClientError result;
-	changeState(Connecting);
-	if (mConnection.connect(mHostname)) {
-		changeState(Connected);
-		if (mConnection.send(request)) {
-			changeState(RequestSent);
-			Message response;
-			if(mConnection.receive(response)) {
-				changeState(ResponseReceived);
-				result = handleResponse(response);
-			} else {
-				result = toClientError(mConnection.lastError());
-			}
+	if (mConnection.send(request)) {
+		changeState(RequestSent);
+		Message response;
+		if(mConnection.receive(response)) {
+			changeState(ResponseReceived);
+			result = handleResponse(response);
 		} else {
 			result = toClientError(mConnection.lastError());
 		}
 	} else {
 		result = toClientError(mConnection.lastError());
 	}
-	
-	mConnection.disconnect();
-	changeState(Disconnected);
 	return result;
 }
 
 Client::ClientError Client::handleResponse(const Message &response)
 {
+	if (response.empty())
+		return WrongResponse;
+	
+	if (response.responseCode() != Message::OK) {
+		switch (response.responseCode()) {
+		case Message::MalformedPacket:
+			return ServerMalformedPacket;
+		case Message::BadPassword:
+			return ServerBadPassword;
+		case Message::BadProtocolVersion:
+			return ServerBadProtocolVersion;
+		case Message::BadIP:
+			return ServerBadIP;
+		case Message::BadSubnetMask:
+			return ServerBadSubnetMask;
+		}
+	}
+		
+	switch (response.type()) {
+	case Message::GetWiFiConfigResponse:
+		mSignModel.setWifiSSID(QString::fromLatin1(response.wifiSSID()));
+		mSignModel.setWifiPassword(QString::fromLatin1(response.wifiPassword()));
+		mSignModel.setWifiIP(QHostAddress(response.wifiIP()));
+		mSignModel.setWifiSubnetMask(QHostAddress(response.wifiSubnet()));
+		break;
+	case Message::GetTextResponse:
+		mSignModel.setText(QString::fromLatin1(response.text()));
+		#warning Falta blink y slide
+		break;
+	default:
+		break;
+	}
+
 	return Ok;
 }
 

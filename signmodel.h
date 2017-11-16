@@ -115,6 +115,7 @@ public slots:
 		if(mText.update(text)) {
 			mDirty = true;
 			emit textChanged(text);
+			qDebug(mText.get().toStdString().data());
 		}
     }
 
@@ -123,6 +124,7 @@ public slots:
 		if(mWifiSSID.update(ssid)) {
 			mDirty = true;
 			emit wifiSSIDChanged(ssid);
+			qDebug(mWifiSSID.get().toStdString().data());
 		}
     }
 
@@ -131,6 +133,7 @@ public slots:
 		if(mWifiPassword.update(password)) {
 			mDirty = true;
 			emit wifiPasswordChanged(password);
+			qDebug(mWifiPassword.get().toStdString().data());
 		}
     }
 	
@@ -139,6 +142,7 @@ public slots:
 		if(mWifiIP.update(ip)) {
 			mDirty = true;
 			emit wifiIPChanged(ip);
+			qDebug(mWifiIP.get().toString().toStdString().data());
 		}
     }
 
@@ -147,6 +151,7 @@ public slots:
 		if(mWifiSubnetMask.update(subnetMask)) {
 			mDirty = true;
 			emit wifiSubnetMaskChanged(subnetMask);
+			qDebug(mWifiSubnetMask.get().toString().toStdString().data());
 		}
     }
 
@@ -155,6 +160,7 @@ public slots:
 		if(mBlinkRate.update(blinkRate)) {
 			mDirty = true;
 			emit blinkRateChanged(blinkRate);
+			qDebug(QString::number(blinkRate).toStdString().data());
 		}
     }
 
@@ -163,6 +169,7 @@ public slots:
 		if(mSlideRate.update(slideRate)) {
 			mDirty = true;
 			emit slideRateChanged(slideRate);
+			qDebug(QString::number(slideRate).toStdString().data());
 		}
     }
 

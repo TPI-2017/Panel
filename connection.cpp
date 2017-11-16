@@ -30,7 +30,7 @@ bool Connection::receive(Message &msg)
 	char data[Message::MESSAGE_SIZE];
 	if (!mSocket.waitForReadyRead(TIMEOUT_MS))
 		return false;
-	bool success = mSocket.read(data, Message::MESSAGE_SIZE) == Message::MESSAGE_SIZE;
+	bool success = (mSocket.read(data, Message::MESSAGE_SIZE) != -1);
 	
 	if (success)
 		msg = Message::createMessage(data);
