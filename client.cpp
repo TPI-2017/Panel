@@ -3,6 +3,7 @@
 #include <QHostAddress>
 #include <iostream>
 #include <QThread>
+#include <iostream>
 
 static uint8_t toFixedPoint(float n)
 {
@@ -103,6 +104,7 @@ void Client::restore()
 		Message getTextMsg;
 		getTextMsg = Message::createGetTextRequest(mPassword.toStdString().data());
 		result = performInteraction(getTextMsg);
+
 		if (result == Ok) {
 			Message getWifiMsg;
 			getWifiMsg = Message::createGetWifiConfigRequest(mPassword.toStdString().data());
@@ -182,7 +184,7 @@ Client::ClientError Client::handleResponse(const Message &response)
 	}
 		
 	switch (response.type()) {
-	case Message::GetWiFiConfig:
+	case Message::GetWiFiConfigResponse:
 		mSignModel.setWifiSSID(QString::fromLatin1(response.wifiSSID()));
 		mSignModel.setWifiPassword(QString::fromLatin1(response.wifiPassword()));
 		mSignModel.setWifiIP(QHostAddress(response.wifiIP()));
@@ -190,6 +192,7 @@ Client::ClientError Client::handleResponse(const Message &response)
 		break;
 	case Message::GetTextResponse:
 		mSignModel.setText(QString::fromLatin1(response.text()));
+		#warning Falta blink y slide
 		break;
 	default:
 		break;
