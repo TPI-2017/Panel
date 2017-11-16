@@ -189,8 +189,8 @@
     <property name="title">
      <string>Connection</string>
     </property>
+    <addaction name="actionChange_configuration"/>
     <addaction name="actionChange_token"/>
-    <addaction name="actionDisconnect"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -240,6 +240,11 @@
   <action name="actionChange_token">
    <property name="text">
     <string>Change token</string>
+   </property>
+  </action>
+  <action name="actionChange_configuration">
+   <property name="text">
+    <string>Change configuration</string>
    </property>
   </action>
  </widget>
