@@ -2,6 +2,7 @@
 #include "ui_panel.h"
 #include "translation.h"
 #include "login_dialog.h"
+#include "configdialog.h"
 #include <QMessageBox>
 
 Panel::Panel(QWidget *parent)
@@ -39,7 +40,10 @@ void Panel::init()
 			&Client::done,
 			this,
 			&Panel::clientDone);
-	QObject::connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
+	QObject::connect(mClient,
+			&Client::stateChanged,
+			this,
+			&Panel::clientStateChanged);
 	QObject::connect(&mClient->model(),
 			&SignModel::textChanged,
 			ui->textMessageField,
@@ -49,7 +53,6 @@ void Panel::init()
 		close();
 
 	mClientThread->start();
-	
 	
 	restoreSettings();
 }
@@ -79,11 +82,6 @@ void Panel::on_actionEnglish_triggered()
 {
 	Translation::translate(Translation::English);
 	ui->retranslateUi(this);
-}
-
-void Panel::on_actionDisconnect_triggered()
-{
-	close();
 }
 
 void Panel::on_actionAbout_triggered()
@@ -227,7 +225,26 @@ void Panel::clientStateChanged(Client::State state)
 
 void Panel::on_textMessageField_textChanged()
 {
-    ui->remainingChars->setText(QString::number(Message::TEXT_SIZE - ui->textMessageField->toPlainText().length()));
+	if(ui->textMessageField->toPlainText().length() > Message::TEXT_SIZE)
+	{
+		int diff = ui->textMessageField->toPlainText().length() - Message::TEXT_SIZE;
+		QString newStr = ui->textMessageField->toPlainText();
+		newStr.chop(diff);
+		ui->textMessageField->setPlainText(newStr);
+		QTextCursor cursor(ui->textMessageField->textCursor());
+		cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+		ui->textMessageField->setTextCursor(cursor);
+	}
+	ui->remainingChars->setText(QString::number(Message::TEXT_SIZE - ui->textMessageField->toPlainText().length()));
+}
+
+void Panel::on_actionChange_configuration_triggered()
+{
+	ConfigDialog *configDialog = new ConfigDialog(this);
+	if (configDialog->exec() != QDialog::Accepted) {
+		return;
+	}
+	emit wifiConfigChanged(configDialog->getSSID(), configDialog->getPassword(), configDialog->getIP(), configDialog->getMask());
 }
 
 // True si apretó OK, false si no.

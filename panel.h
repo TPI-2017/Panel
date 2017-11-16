@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QApplication>
 #include <QThread>
+#include <QHostAddress>
 #include "client.h"
 
 namespace Ui {
@@ -23,6 +24,7 @@ signals:
 	void restoreRequested();
 	void hostnameChanged(QString);
 	void passwordChanged(QString);
+	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
 
 public slots:
 	// Slots de actualización del modelo
@@ -37,10 +39,10 @@ private slots:
 	void on_actionQuit_triggered();
 	void on_actionEspaniol_triggered();
 	void on_actionEnglish_triggered();
-	void on_actionDisconnect_triggered();
 	void on_actionAbout_triggered();
 	void on_actionChange_token_triggered();
 	void on_textMessageField_textChanged();
+	void on_actionChange_configuration_triggered();
 
 private:
 	void applySettings();

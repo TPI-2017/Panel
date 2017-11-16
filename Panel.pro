@@ -47,7 +47,8 @@ SOURCES += \
 	login_dialog.cpp \
 	protocol/Message.cpp \
 	connection.cpp \
-	test.cpp
+	test.cpp \
+	configdialog.cpp
 
 HEADERS += \
 	panel.h \
@@ -57,7 +58,8 @@ HEADERS += \
 	client.h \
 	protocol/Message.h \
 	signmodel.h \
-	connection.h
+	connection.h \
+	configdialog.h
 
 FORMS += \
         panel.ui
