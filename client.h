@@ -48,7 +48,12 @@ public:
 		SslHandshakeFailed,
 		SslInternalError,
 		SslInvalidData,
-		Unknown
+		Unknown,
+		ServerMalformedPacket,
+		ServerBadPassword,
+		ServerBadProtocolVersion,
+		ServerBadIP,
+		ServerBadSubnetMask
 	};
 	Q_ENUM(Client::ClientError)
 
