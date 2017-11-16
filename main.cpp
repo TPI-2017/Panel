@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <connection.h>
+#include <client.h>
 #include <iostream>
 
 static void checkSslSupport()

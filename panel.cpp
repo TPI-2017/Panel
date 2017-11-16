@@ -15,28 +15,41 @@ Panel::Panel(QWidget *parent)
 
 void Panel::init()
 {
-    on_textMessageField_textChanged();
+	on_textMessageField_textChanged();
 	show();
 	
 	mClient->moveToThread(mClientThread);
-	QObject::connect(this, &Panel::applyRequested, mClient, &Client::apply);
-	QObject::connect(this, &Panel::restoreRequested, mClient, &Client::restore);
-	QObject::connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
-	QObject::connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
-	QObject::connect(mClient, &Client::done, this, &Panel::clientDone);
+	QObject::connect(this,
+			&Panel::applyRequested,
+			mClient,
+			&Client::apply);
+	QObject::connect(this,
+			&Panel::restoreRequested,
+	                mClient,
+	                &Client::restore);
+	QObject::connect(this,
+			&Panel::hostnameChanged,
+	                mClient,
+	                &Client::setHostname);
+	QObject::connect(this,
+			&Panel::passwordChanged,
+	                mClient,
+	                &Client::setWorkingPassword);
+	QObject::connect(mClient,
+			&Client::done,
+			this,
+			&Panel::clientDone);
 	QObject::connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
+	QObject::connect(&mClient->model(),
+			&SignModel::textChanged,
+			ui->textMessageField,
+			&QPlainTextEdit::setPlainText);
+			
+	if (!promptPassword())
+		close();
 
 	mClientThread->start();
 	
-	LoginDialog *loginDialog = new LoginDialog(this);
-	int result = loginDialog->exec();
-	
-	if (result != QDialog::Accepted) {
-		close();
-		return;
-	}
-	emit hostnameChanged(loginDialog->getHostname());
-	emit passwordChanged(loginDialog->getPassword());
 	
 	restoreSettings();
 }
@@ -107,26 +120,23 @@ void Panel::applySettings()
 
 void Panel::clientDone(Client::ClientError status)
 {
-	this->setEnabled(true);
 	this->statusBar()->showMessage(tr("Ready"));
 	if (status != Client::Ok)
 		errorOccurred(status);
-	// TODO: considerar especialmente el caso de contraseña incorrecta
+		
+	if (status == Client::ServerBadPassword) {
+		if (!promptPassword())
+			close();
+		restoreSettings();
+	} else {
+		this->setEnabled(true);
+	}
 }
 
 void Panel::errorOccurred(Client::ClientError error)
 {
 	QString errorMessage;
 	switch (error) {
-	case Client::BadPassword:
-		errorMessage = tr("Wrong password.");
-		break;
-	case Client::BadWifiConfig:
-		errorMessage = tr("Wrong Wifi settings.");
-		break;
-	case Client::BadTextEncoding:
-		errorMessage = tr("Text encoding is not Latin-1.");
-		break;
 	case Client::CertificateMissing:
 		errorMessage = tr("Failed to load TLS certificate.");
 		break;
@@ -134,7 +144,7 @@ void Panel::errorOccurred(Client::ClientError error)
 		errorMessage = tr("Connection timed out.");
 		break;
 	case Client::WrongResponse:
-		errorMessage = tr("Received invalid response.");
+		errorMessage = tr("Corrupt response.");
 		break;
 	case Client::ConnectionRefused:
 		errorMessage = tr("Connection refused by host.");
@@ -156,6 +166,21 @@ void Panel::errorOccurred(Client::ClientError error)
 		break;
 	case Client::SslInvalidData:
 		errorMessage = tr("Invalid TLS user data.");
+		break;
+	case Client::ServerMalformedPacket:
+		errorMessage = tr("Malformed packet.");
+		break;
+	case Client::ServerBadPassword:
+		errorMessage = tr("Wrong password.");
+		break;
+	case Client::ServerBadProtocolVersion:
+		errorMessage = tr("Protocol version mismatch.");
+		break;
+	case Client::ServerBadIP:
+		errorMessage = tr("Invalid IP.");
+		break;
+	case Client::ServerBadSubnetMask:
+		errorMessage = tr("Invalid IP subnet mask.");
 		break;
 	case Client::Unknown:
 	default:
@@ -203,4 +228,18 @@ void Panel::clientStateChanged(Client::State state)
 void Panel::on_textMessageField_textChanged()
 {
     ui->remainingChars->setText(QString::number(Message::TEXT_SIZE - ui->textMessageField->toPlainText().length()));
+}
+
+// True si apretó OK, false si no.
+bool Panel::promptPassword()
+{
+	LoginDialog *loginDialog = new LoginDialog(this);
+	int result = loginDialog->exec();
+
+	if (result != QDialog::Accepted)
+		return false;
+
+	emit hostnameChanged(loginDialog->getHostname());
+	emit passwordChanged(loginDialog->getPassword());
+	return true;
 }

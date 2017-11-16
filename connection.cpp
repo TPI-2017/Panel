@@ -40,7 +40,7 @@ bool Connection::receive(Message &msg)
 
 void Connection::disconnect()
 {
-	if (mSocket.isOpen()) {
+	if (mSocket.isOpen() && mSocket.state() != QAbstractSocket::UnconnectedState) {
 		mSocket.close();
 		mSocket.waitForDisconnected(TIMEOUT_MS);
 	}

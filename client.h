@@ -34,9 +34,6 @@ public:
 	enum ClientError
 	{
 		Ok,
-		BadPassword,
-		BadWifiConfig,
-		BadTextEncoding,
 		CertificateMissing,
 		Timeout,
 		WrongResponse,
@@ -56,6 +53,11 @@ public:
 		ServerBadSubnetMask
 	};
 	Q_ENUM(Client::ClientError)
+	
+	const SignModel &model()
+	{
+		return mSignModel;
+	}
 
 public slots:
 	void setHostname(QString hostname);
@@ -73,7 +75,7 @@ signals:
 	void stateChanged(State state);
 	void errorOccurred(QString errorString);
 	void done(ClientError status);
-private:
+protected:
 	SignModel mSignModel;
 	Connection mConnection;
 	State mState;

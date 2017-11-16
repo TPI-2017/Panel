@@ -46,7 +46,8 @@ SOURCES += \
 	client.cpp \
 	login_dialog.cpp \
 	protocol/Message.cpp \
-	connection.cpp
+	connection.cpp \
+	test.cpp
 
 HEADERS += \
 	panel.h \

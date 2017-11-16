@@ -40,12 +40,13 @@ private slots:
 	void on_actionDisconnect_triggered();
 	void on_actionAbout_triggered();
 	void on_actionChange_token_triggered();
-    void on_textMessageField_textChanged();
+	void on_textMessageField_textChanged();
 
 private:
 	void applySettings();
 	void restoreSettings();
 	void errorOccurred(QString);
+	bool promptPassword();
 
 	Ui::Panel *ui;
 	Client *mClient;
