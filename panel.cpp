@@ -47,7 +47,7 @@ void Panel::init()
 	connect(this, &Panel::wifiConfigChanged, mClient, &Client::setWifiConfig);
 
 	// Para pedir la reemisión de todos los valores del modelo
-	connect(this, &Panel::modelEmitNeeded, &mClient->model(), SignModel::emitValues);
+	connect(this, &Panel::modelEmitNeeded, &mClient->model(), &SignModel::emitValues);
 
 	if (!showLoginPrompt()) {
 		close();

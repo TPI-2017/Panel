@@ -25,10 +25,12 @@ win32 {
 
 linux {
 	DEFINES += POSIX
+        DEFINES += LINUX
 }
 
 macx {
 	DEFINES += POSIX
+        DEFINES += LINUX
 }
 
 # You can also make your code fail to compile if you use deprecated APIs.
