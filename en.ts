@@ -2,161 +2,253 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_US">
 <context>
-    <name>Login</name>
+    <name>ConfigDialog</name>
     <message>
-        <location filename="login.ui" line="26"/>
-        <source>Login</source>
-        <translation></translation>
+        <source>Network Name (SSID):</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="login.ui" line="64"/>
-        <source>Enter the security token</source>
-        <translation></translation>
+        <source>Network password:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="login.ui" line="96"/>
-        <source>Connect</source>
-        <translation></translation>
+        <source>IP:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subnet mask:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LoginDialog</name>
+    <message>
+        <source>Host:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Panel</name>
     <message>
-        <location filename="panel.ui" line="14"/>
         <source>Panel</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="23"/>
         <source>Content</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="31"/>
-        <source>&amp;Text:</source>
-        <translation></translation>
+        <source>Text:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="50"/>
-        <source>Use matrix ...</source>
-        <translation></translation>
+        <source>0</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="65"/>
-        <source>Sliding</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="71"/>
-        <source>Slide</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="78"/>
-        <source>&amp;Speed (px/sec):</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="91"/>
-        <source>&amp;Direction:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="102"/>
-        <source>Left</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="107"/>
-        <source>Right</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="118"/>
         <source>Blinking</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="124"/>
         <source>Blink</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="131"/>
         <source>&amp;Frequency (Hz):</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="151"/>
-        <source>Preview</source>
-        <translation></translation>
+        <source>Sliding</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="159"/>
+        <source>Slide</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Speed (px/sec):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Direction:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Restore</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="166"/>
         <source>Apply</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="204"/>
         <source>Connection</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="212"/>
-        <source>Language</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="219"/>
         <source>Help</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="230"/>
-        <source>Disconnect</source>
-        <translation></translation>
+        <source>Change password...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="235"/>
+        <source>Change network configuration...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Quit</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="240"/>
-        <source>Español</source>
-        <translation></translation>
+        <source>Ctrl+Q</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.ui" line="245"/>
-        <source>English</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="250"/>
-        <source>About</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.cpp" line="52"/>
         <source>Authors</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="panel.cpp" line="53"/>
         <source>
 LED Display - © 2017
 
-Garcı́a, Agustı́n
+García, Agustín
 Levy, Santiago
 Romero Dapozo, Ramiro
 Ternouski, Sebastian Nahuel
 </source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load TLS certificate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection timed out.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Corrupt response.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection refused by host.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remote host closed connection unexpectedly.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Received invalid response.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TLS internal error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid TLS user data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Malformed packet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol version mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid IP.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid IP subnet mask.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occurred</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not ready.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting to host...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting for response...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Response received.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>PasswordDialog</name>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>TLS not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The program will not run correctly. OpenSSL version required: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

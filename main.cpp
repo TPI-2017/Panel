@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	checkSslSupport();
 	Panel w;
 	w.init();
-	
+
 	Translation::translate();
 	return a.exec();
 }

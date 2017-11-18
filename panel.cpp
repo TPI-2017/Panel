@@ -20,7 +20,6 @@ void Panel::init()
 	setEnabled(false);
 	show();
 
-
 	// El objeto de tipo Client se ejecuta en otro hilo. Esto significa que
 	// tiene su propia cola de eventos separada y todos sus slots se ejecutan
 	// en paralelo a este hilo pero siempre un slot tras otro.
@@ -219,7 +218,7 @@ void Panel::updateState(Client::State state)
 		text = tr("Waiting for response...");
 		break;
 	case Client::ResponseReceived:
-		text = tr("ResponseReceived.");
+		text = tr("Response received.");
 		break;
 	default:
 		break;

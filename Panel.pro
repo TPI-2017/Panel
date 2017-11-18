@@ -71,3 +71,7 @@ FORMS += \
 RESOURCES += \
     translations.qrc \
     ssl.qrc
+
+TRANSLATIONS += \
+            es.ts \
+            en.ts \

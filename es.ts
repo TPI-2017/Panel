@@ -2,153 +2,288 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es_AR" sourcelanguage="en_US">
 <context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Network Name (SSID):</source>
+        <translation>Nombre de red (SSID):</translation>
+    </message>
+    <message>
+        <source>Network password:</source>
+        <translation>Contraseña de red:</translation>
+    </message>
+    <message>
+        <source>IP:</source>
+        <translation>IP:</translation>
+    </message>
+    <message>
+        <source>Subnet mask:</source>
+        <translation>Máscara de subred:</translation>
+    </message>
+</context>
+<context>
     <name>Login</name>
     <message>
-        <location filename="login.ui" line="26"/>
         <source>Login</source>
-        <translation>Identificación</translation>
+        <translation type="vanished">Identificación</translation>
     </message>
     <message>
-        <location filename="login.ui" line="64"/>
         <source>Enter the security token</source>
-        <translation>Ingrese el token de seguridad</translation>
+        <translation type="vanished">Ingrese el token de seguridad</translation>
     </message>
     <message>
-        <location filename="login.ui" line="96"/>
         <source>Connect</source>
-        <translation>Entrar</translation>
+        <translation type="vanished">Entrar</translation>
+    </message>
+</context>
+<context>
+    <name>LoginDialog</name>
+    <message>
+        <source>Host:</source>
+        <translation>Host:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Contraseña:</translation>
     </message>
 </context>
 <context>
     <name>Panel</name>
     <message>
-        <location filename="panel.ui" line="14"/>
         <source>Panel</source>
         <translation>Panel</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="23"/>
         <source>Content</source>
         <translation>Contenido</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="31"/>
         <source>&amp;Text:</source>
-        <translation>&amp;Texto:</translation>
+        <translation type="vanished">&amp;Texto:</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="50"/>
         <source>Use matrix ...</source>
-        <translation>Usar matriz ...</translation>
+        <translation type="vanished">Usar matriz ...</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="65"/>
         <source>Sliding</source>
         <translation>Deslizamiento</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="71"/>
         <source>Slide</source>
         <translation>Deslizar</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="78"/>
         <source>&amp;Speed (px/sec):</source>
         <translation>&amp;Velocidad (px/seg):</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="91"/>
         <source>&amp;Direction:</source>
         <oldsource>Direction:</oldsource>
         <translation>&amp;Dirección:</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="102"/>
         <source>Left</source>
         <translation>Izquierda</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="107"/>
         <source>Right</source>
         <translation>Derecha</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="118"/>
+        <source>Change password...</source>
+        <translation>Cambiar contraseña...</translation>
+    </message>
+    <message>
+        <source>Change network configuration...</source>
+        <translation>Cambiar configuración de red...</translation>
+    </message>
+    <message>
+        <source>About...</source>
+        <translation>Acerca de...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Q</source>
+        <translation>Ctrl+Q</translation>
+    </message>
+    <message>
         <source>Blinking</source>
         <translation>Parpadeo</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="124"/>
+        <source>Text:</source>
+        <translation>Texto:</translation>
+    </message>
+    <message>
+        <source>0</source>
+        <translation>0</translation>
+    </message>
+    <message>
         <source>Blink</source>
         <translation>Parpadear</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="131"/>
         <source>&amp;Frequency (Hz):</source>
-        <translation>&amp;Frecuencua (Hz):</translation>
+        <translation>&amp;Frecuencia (Hz):</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="151"/>
         <source>Preview</source>
-        <translation>Vista previa</translation>
+        <translation type="vanished">Vista previa</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="159"/>
         <source>Restore</source>
         <translation>Restaurar</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="166"/>
         <source>Apply</source>
         <translation>Aplicar</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="204"/>
         <source>Connection</source>
         <translation>Conexión</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="212"/>
         <source>Language</source>
-        <translation>Idioma</translation>
+        <translation type="vanished">Idioma</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="219"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="230"/>
         <source>Disconnect</source>
-        <translation>Desconectar</translation>
+        <translation type="vanished">Desconectar</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="235"/>
         <source>Quit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="panel.ui" line="240"/>
-        <source>Español</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="245"/>
-        <source>English</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="panel.ui" line="250"/>
         <source>About</source>
-        <translation>Sobre..</translation>
+        <translation type="vanished">Sobre..</translation>
     </message>
     <message>
-        <location filename="panel.cpp" line="52"/>
         <source>Authors</source>
         <translation>Autores</translation>
     </message>
     <message>
-        <location filename="panel.cpp" line="53"/>
+        <source>
+LED Display - © 2017
+
+García, Agustín
+Levy, Santiago
+Romero Dapozo, Ramiro
+Ternouski, Sebastian Nahuel
+</source>
+        <translation>
+Cartel LED - © 2017
+
+García, Agustín
+Levy, Santiago
+Romero Dapozo, Ramiro
+Ternouski, Sebastian Nahuel
+</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>Listo</translation>
+    </message>
+    <message>
+        <source>Failed to load TLS certificate.</source>
+        <translation>Falló la carga del certificado TLS.</translation>
+    </message>
+    <message>
+        <source>Connection timed out.</source>
+        <translation>Tiempo de respuesta expirado.</translation>
+    </message>
+    <message>
+        <source>Corrupt response.</source>
+        <translation>Respuesta corrupta.</translation>
+    </message>
+    <message>
+        <source>Connection refused by host.</source>
+        <translation>Conección rechasada por el host.</translation>
+    </message>
+    <message>
+        <source>Remote host closed connection unexpectedly.</source>
+        <translation>Conección del host remoto se cerró inesperadamente.</translation>
+    </message>
+    <message>
+        <source>Host not found.</source>
+        <translation>No se encuentra el host.</translation>
+    </message>
+    <message>
+        <source>Network error.</source>
+        <translation>Error de red.</translation>
+    </message>
+    <message>
+        <source>Received invalid response.</source>
+        <translation>Respuesta recibida invalida.</translation>
+    </message>
+    <message>
+        <source>TLS internal error.</source>
+        <translation>Error interno de TLS.</translation>
+    </message>
+    <message>
+        <source>Invalid TLS user data.</source>
+        <translation>Datos TLS de usuario invalido.</translation>
+    </message>
+    <message>
+        <source>Malformed packet.</source>
+        <translation>Paquete mal formado.</translation>
+    </message>
+    <message>
+        <source>Wrong password.</source>
+        <translation>Contraseña errónea.</translation>
+    </message>
+    <message>
+        <source>Protocol version mismatch.</source>
+        <translation>Versión de protocolo distintas.</translation>
+    </message>
+    <message>
+        <source>Invalid IP.</source>
+        <translation>IP invalida.</translation>
+    </message>
+    <message>
+        <source>Invalid IP subnet mask.</source>
+        <translation>Máscada IP de subred invalida.</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>Error desconocido.</translation>
+    </message>
+    <message>
+        <source>An error occurred</source>
+        <translation>Un error a ocurrido</translation>
+    </message>
+    <message>
+        <source>Not ready.</source>
+        <translation>No esta listo.</translation>
+    </message>
+    <message>
+        <source>Ready.</source>
+        <translation>Listo.</translation>
+    </message>
+    <message>
+        <source>Connecting to host...</source>
+        <translation>Conectado al host...</translation>
+    </message>
+    <message>
+        <source>Connected.</source>
+        <translation>Conectado.</translation>
+    </message>
+    <message>
+        <source>Waiting for response...</source>
+        <translation>Esperando por una respuesta...</translation>
+    </message>
+    <message>
+        <source>Response received.</source>
+        <translation>Respuesta recibida.</translation>
+    </message>
+    <message>
+        <source>ResponseReceived.</source>
+        <translation type="vanished">Respuesta recibida.</translation>
+    </message>
+    <message>
         <source>
 LED Display - © 2017
 
@@ -157,7 +292,7 @@ Levy, Santiago
 Romero Dapozo, Ramiro
 Ternouski, Sebastian Nahuel
 </source>
-        <translation>
+        <translation type="vanished">
 Cartel LED - © 2017
 
 Garcı́a, Agustı́n
@@ -165,6 +300,24 @@ Levy, Santiago
 Romero Dapozo, Ramiro
 Ternouski, Sebastian Nahuel
 </translation>
+    </message>
+</context>
+<context>
+    <name>PasswordDialog</name>
+    <message>
+        <source>Password:</source>
+        <translation>Contraseña:</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>TLS not supported.</source>
+        <translation>TLS no soportado.</translation>
+    </message>
+    <message>
+        <source>The program will not run correctly. OpenSSL version required: </source>
+        <translation>Este programa no va a ejecutarse correctamente. La versión que se requiere de OpenSSL es: </translation>
     </message>
 </context>
 </TS>
