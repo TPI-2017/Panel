@@ -1,12 +1,19 @@
 #ifndef PASSWORDCHANGEDIALOG_H
 #define PASSWORDCHANGEDIALOG_H
 
-#include <QObject>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QLineEdit>
 
-class PasswordChangeDialog
+class PasswordDialog
 {
+	Q_OBJECT
 public:
-	PasswordChangeDialog();
-};
+	explicit PasswordDialog(QWidget *parent = 0);
+	QString getPassword();
+private:
+	QLineEdit *mPasswordField;
+	QDialogButtonBox *mButtons;
 
+};
 #endif // PASSWORDCHANGEDIALOG_H

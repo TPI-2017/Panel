@@ -42,7 +42,6 @@ void Panel::init()
 	connect(&mClient->model(), &SignModel::textChanged, ui->textMessageField, &QPlainTextEdit::setPlainText);
 
 	// Para pasar cambios en la vista al controlador (Client)
-
 	connect(this, &Panel::textChanged, mClient, &Client::setText);
 	connect(this, &Panel::wifiConfigChanged, mClient, &Client::setWifiConfig);
 
