@@ -24,7 +24,10 @@ signals:
 	void hostnameChanged(QString);
 	void passwordChanged(QString);
 	void textChanged(QString);
-	void wifiConfigChanged(QString SSID, QString wifiPassword, quint32 ip, quint32 subnetMask);
+	void wifiConfigChanged( QString SSID,
+				QString wifiPassword,
+				quint32 ip,
+				quint32 subnetMask);
 	void modelEmitNeeded();
 
 public slots:

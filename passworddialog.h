@@ -5,7 +5,7 @@
 #include <QDialogButtonBox>
 #include <QLineEdit>
 
-class PasswordDialog
+class PasswordDialog : public QDialog
 {
 	Q_OBJECT
 public:

@@ -23,7 +23,7 @@ PasswordDialog::PasswordDialog(QWidget *parent)
 	mPasswordField->setFocus(Qt::NoFocusReason);
 }
 
-QString LoginDialog::getPassword()
+QString PasswordDialog::getPassword()
 {
 	return mPasswordField->text();
 }

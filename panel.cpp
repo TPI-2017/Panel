@@ -25,7 +25,23 @@ void Panel::init()
 	// tiene su propia cola de eventos separada y todos sus slots se ejecutan
 	// en paralelo a este hilo pero siempre un slot tras otro.
 	mClient->moveToThread(mClientThread);
-	// Acciones de la GUI
+	// Widgets del panel
+	connect(ui->aboutAction,
+		&QAction::triggered,
+		this,
+		&Panel::showAboutDialog);
+	connect(ui->quitAction,
+		&QAction::triggered,
+		this,
+		&Panel::quit);
+	connect(ui->changePasswordAction,
+		&QAction::triggered,
+		this,
+		&Panel::showPasswordDialog);
+	connect(ui->changeConfigAction,
+		&QAction::triggered,
+		this,
+		&Panel::showConfigDialog);
 
 	// Para accionar un apply() o restore() en Client.
 	connect(this, &Panel::applyRequested, mClient, &Client::apply);
