@@ -69,6 +69,7 @@ public slots:
 	void restore();
 	// Estos setters actualizan el modelo. No mandan cambios al cartel.
 	void setText(QString text);
+	void setPassword(QString text);
 	void setBlinkRate(float blinkRate);
 	void setSlideRate(float slideRate);
 	void setWifiConfig(QString SSID, QString wifiPassword, quint32 ip, quint32 subnetMask);

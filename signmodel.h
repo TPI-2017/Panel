@@ -11,7 +11,7 @@ public:
 	const T& get() const
 	{
 		return mObject;
-	};
+	}
 
 	bool update(const T &newValue)
 	{
@@ -19,17 +19,17 @@ public:
 		committed = committed && equal;
 		mObject = newValue;
 		return !equal;
-	};
+	}
 
 	void commit()
 	{
 		committed = true;
-	};
+	}
 
 	bool dirty() const
 	{
 		return !committed;
-	};
+	}
 
 private:
 	bool committed = false;
@@ -101,6 +101,7 @@ public:
 	}
 
 signals:
+	void passwordChanged(QString);
 	void textChanged(QString);
 	void wifiSSIDChanged(QString);
 	void wifiPasswordChanged(QString);
@@ -110,13 +111,21 @@ signals:
 	void slideRateChanged(float);
 
 public slots:
+	void setPassword(QString text)
+	{
+		if(mPassword.update(text)) {
+			mDirty = true;
+			emit passwordChanged(text);
+		}
+	}
+
 	void setText(QString text)
 	{
 		if(mText.update(text)) {
 			mDirty = true;
 			emit textChanged(text);
 		}
-    }
+	}
 
 	void setWifiSSID(QString ssid)
 	{
@@ -124,7 +133,7 @@ public slots:
 			mDirty = true;
 			emit wifiSSIDChanged(ssid);
 		}
-    }
+	}
 
 	void setWifiPassword(QString password)
 	{
@@ -132,15 +141,15 @@ public slots:
 			mDirty = true;
 			emit wifiPasswordChanged(password);
 		}
-    }
+	}
 
 	void setWifiIP(quint32 ip)
-    {
+	{
 		if(mWifiIP.update(ip)) {
 			mDirty = true;
 			emit wifiIPChanged(ip);
 		}
-    }
+	}
 
 	void setWifiSubnetMask(quint32 subnetMask)
 	{
@@ -148,7 +157,7 @@ public slots:
 			mDirty = true;
 			emit wifiSubnetMaskChanged(subnetMask);
 		}
-    }
+	}
 
 	void setBlinkRate(float blinkRate)
 	{
@@ -156,7 +165,7 @@ public slots:
 			mDirty = true;
 			emit blinkRateChanged(blinkRate);
 		}
-    }
+	}
 
 	void setSlideRate(float slideRate)
 	{
@@ -164,21 +173,23 @@ public slots:
 			mDirty = true;
 			emit slideRateChanged(slideRate);
 		}
-    }
+	}
 
-    void emitValues()
-    {
-	emit textChanged(mText.get());
-	emit wifiSSIDChanged(mWifiSSID.get());
-	emit wifiPasswordChanged(mWifiPassword.get());
-	emit wifiIPChanged(mWifiIP.get());
-	emit wifiSubnetMaskChanged(mWifiSubnetMask.get());
-	emit blinkRateChanged(mBlinkRate.get());
-	emit slideRateChanged(mSlideRate.get());
-    }
+	void emitValues()
+	{
+		emit textChanged(mPassword.get());
+		emit textChanged(mText.get());
+		emit wifiSSIDChanged(mWifiSSID.get());
+		emit wifiPasswordChanged(mWifiPassword.get());
+		emit wifiIPChanged(mWifiIP.get());
+		emit wifiSubnetMaskChanged(mWifiSubnetMask.get());
+		emit blinkRateChanged(mBlinkRate.get());
+		emit slideRateChanged(mSlideRate.get());
+	}
 
 
 private:
+	Field<QString> mPassword;
 	Field<QString> mText;
 	Field<QString> mWifiSSID;
 	Field<QString> mWifiPassword;
