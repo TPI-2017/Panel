@@ -29,6 +29,7 @@ signals:
 				quint32 ip,
 				quint32 subnetMask);
 	void modelEmitNeeded();
+	void setPasswordIssued(QString);
 
 public slots:
 	// Slots de actualización del modelo
@@ -46,6 +47,8 @@ private slots:
 	void applySettings();
 	void quit();
 	void validateText();
+	void slideRateCheckChanged(int state);
+	void blinkRateCheckChanged(int state);
 
 private:
 	bool showLoginPrompt();

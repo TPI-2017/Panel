@@ -113,7 +113,6 @@ void Client::restore()
 			getWifiMsg = Message::createGetWifiConfigRequest(password.data());
 			result = performInteraction(getWifiMsg);
 		}
-
 	} else {
 		result = toClientError(mConnection.lastError());
 	}
@@ -129,6 +128,11 @@ void Client::restore()
 void Client::setText(QString text)
 {
 	mSignModel.setText(text);
+}
+
+void Client::setPassword(QString text)
+{
+	mSignModel.setPassword(text);
 }
 
 void Client::setBlinkRate(float blinkRate)

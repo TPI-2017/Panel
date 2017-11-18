@@ -3,6 +3,7 @@
 #include "translation.h"
 #include "logindialog.h"
 #include "configdialog.h"
+#include "passworddialog.h"
 #include <QMessageBox>
 
 Panel::Panel(QWidget *parent)
@@ -41,6 +42,29 @@ void Panel::init()
 		&QAction::triggered,
 		this,
 		&Panel::showConfigDialog);
+	connect(ui->applyButton,
+		&QPushButton::clicked,
+		this,
+		&Panel::applySettings);
+	connect(ui->restoreButton,
+		&QPushButton::clicked,
+		this,
+		&Panel::restoreSettings);
+
+	// Para validar la longitud y codificación del texto
+	connect(ui->textMessageField,
+		&QPlainTextEdit::textChanged,
+		this,
+		&Panel::validateText);
+	// Para activar o desactivar los campos de blink y slide rate
+	connect(ui->slideCheckBox,
+		QCheckBox::stateChanged,
+		this,
+		&Panel::slideRateCheckChanged);
+	connect(ui->blinkCheckBox,
+		QCheckBox::stateChanged,
+		this,
+		&Panel::blinkRateCheckChanged);
 
 	// Para accionar un apply() o restore() en Client.
 	connect(this, &Panel::applyRequested, mClient, &Client::apply);
@@ -60,6 +84,7 @@ void Panel::init()
 	// Para pasar cambios en la vista al controlador (Client)
 	connect(this, &Panel::textChanged, mClient, &Client::setText);
 	connect(this, &Panel::wifiConfigChanged, mClient, &Client::setWifiConfig);
+	connect(this, &Panel::setPasswordIssued, mClient, &Client::setPassword);
 
 	// Para pedir la reemisión de todos los valores del modelo
 	connect(this, &Panel::modelEmitNeeded, &mClient->model(), &SignModel::emitValues);
@@ -110,7 +135,11 @@ void Panel::showAboutDialog()
 
 void Panel::showPasswordDialog()
 {
-
+	PasswordDialog *dialog = new PasswordDialog(this);
+	if (dialog->exec() == QDialog::Accepted) {
+		emit setPasswordIssued(dialog->getPassword());
+	}
+	delete dialog;
 }
 
 void Panel::updateText(QString text)
@@ -241,6 +270,19 @@ void Panel::validateText()
 	}
 	QString number = QString::number(Message::TEXT_SIZE - str.length());
 	ui->remainingChars->setText(number);
+}
+
+void Panel::slideRateCheckChanged(int state)
+{
+	bool checked = state == Qt::Checked;
+	ui->speedSpinBox->setEnabled(checked);
+
+}
+
+void Panel::blinkRateCheckChanged(int state)
+{
+	bool checked = state == Qt::Checked;
+	ui->frequencySpinBox->setEnabled(checked);
 }
 
 void Panel::showConfigDialog()
