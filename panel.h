@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QApplication>
 #include <QThread>
-#include <QHostAddress>
 #include "client.h"
 
 namespace Ui {
@@ -25,7 +24,7 @@ signals:
 	void hostnameChanged(QString);
 	void passwordChanged(QString);
 	void textChanged(QString);
-	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
+	void wifiConfigChanged(QString SSID, QString wifiPassword, quint32 ip, quint32 subnetMask);
 	void modelEmitNeeded();
 
 public slots:

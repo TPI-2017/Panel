@@ -35,8 +35,14 @@
          </item>
          <item alignment="Qt::AlignRight">
           <widget class="QLabel" name="remainingChars">
+           <property name="statusTip">
+            <string notr="true"/>
+           </property>
            <property name="text">
             <string>0</string>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::NoTextInteraction</set>
            </property>
           </widget>
          </item>
@@ -227,12 +233,12 @@
   </action>
   <action name="actionChange_token">
    <property name="text">
-    <string>Change token</string>
+    <string>Change password...</string>
    </property>
   </action>
   <action name="actionChange_configuration">
    <property name="text">
-    <string>Change configuration</string>
+    <string>Change configuration...</string>
    </property>
   </action>
  </widget>

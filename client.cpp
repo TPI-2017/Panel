@@ -1,6 +1,5 @@
 #include "client.h"
 #include <stdint.h>
-#include <QHostAddress>
 #include <iostream>
 #include <QThread>
 #include <iostream>
@@ -59,8 +58,8 @@ void Client::apply()
 			QString text = mSignModel.text();
 			QString ssid = mSignModel.wifiSSID();
 			QString password = mSignModel.wifiPassword();
-			QHostAddress ip = mSignModel.wifiIP();
-			QHostAddress subnet = mSignModel.wifiSubnetMask();
+			quint32 ip = mSignModel.wifiIP();
+			quint32 subnet = mSignModel.wifiSubnetMask();
 			uint8_t br = toFixedPoint(mSignModel.blinkRate());
 			uint8_t sr = toFixedPoint(mSignModel.blinkRate());
 
@@ -76,8 +75,8 @@ void Client::apply()
 									mPassword.toStdString().data(),
 									ssid.toStdString().data(),
 									password.toStdString().data(),
-									ip.toIPv4Address(),
-									subnet.toIPv4Address()
+									ip,
+									subnet
 									);
 			result = performInteraction(textMsg);
 			if (result == Ok)
@@ -154,8 +153,8 @@ void Client::setHostname(QString hostname)
 
 void Client::setWifiConfig(QString SSID,
 			QString wifiPassword,
-			QHostAddress ip,
-			QHostAddress subnetMask)
+			quint32 ip,
+			quint32 subnetMask)
 {
 	mSignModel.setWifiSSID(SSID);
 	mSignModel.setWifiPassword(wifiPassword);
@@ -205,8 +204,8 @@ Client::ClientError Client::handleResponse(const Message &response)
 	case Message::GetWiFiConfigResponse:
 		mSignModel.setWifiSSID(QString::fromLatin1(response.wifiSSID()));
 		mSignModel.setWifiPassword(QString::fromLatin1(response.wifiPassword()));
-		mSignModel.setWifiIP(QHostAddress(response.wifiIP()));
-		mSignModel.setWifiSubnetMask(QHostAddress(response.wifiSubnet()));
+		mSignModel.setWifiIP(quint32(response.wifiIP()));
+		mSignModel.setWifiSubnetMask(quint32(response.wifiSubnet()));
 		break;
 	case Message::GetTextResponse:
 		mSignModel.setText(QString::fromLatin1(response.text()));

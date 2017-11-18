@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
-#include <QHostAddress>
 
 class ConfigDialog : public QDialog
 {
@@ -13,13 +12,13 @@ public:
 	explicit ConfigDialog(QWidget *parent = 0);
 	QString getSSID();
 	QString getPassword();
-	QHostAddress getIP();
-	QHostAddress getMask();
+	quint32 getIP();
+	quint32 getMask();
 public slots:
 	void setSSID(QString);
 	void setPassword(QString);
-	void setIP(QHostAddress);
-	void setMask(QHostAddress);
+	void setIP(quint32);
+	void setMask(quint32);
 private:
 	QLineEdit *mSSIDField;
 	QLineEdit *mPasswordField;

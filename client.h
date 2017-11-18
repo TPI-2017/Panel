@@ -6,7 +6,6 @@
 #include <QList>
 #include <QSslSocket>
 #include <QSslCertificate>
-#include <QHostAddress>
 #include "protocol/Message.h"
 #include "connection.h"
 #include "signmodel.h"
@@ -53,7 +52,7 @@ public:
 		ServerBadSubnetMask
 	};
 	Q_ENUM(Client::ClientError)
-	
+
 	const SignModel &model()
 	{
 		return mSignModel;
@@ -61,9 +60,9 @@ public:
 
 public slots:
 	void setHostname(QString hostname);
-	
+
 	void setWorkingPassword(QString password);
-	
+
 	// Aplica los cambios del modelo actual al cartel.
 	void apply();
 	// Actualiza el modelo con el estado actual del cartel.
@@ -72,7 +71,7 @@ public slots:
 	void setText(QString text);
 	void setBlinkRate(float blinkRate);
 	void setSlideRate(float slideRate);
-	void setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
+	void setWifiConfig(QString SSID, QString wifiPassword, quint32 ip, quint32 subnetMask);
 signals:
 	void stateChanged(State state);
 	void errorOccurred(QString errorString);
@@ -83,7 +82,7 @@ protected:
 	State mState;
 	QString mHostname;
 	QString mPassword;
-	
+
 	void changeState(State state);
 	ClientError performInteraction(const Message &request);
 	ClientError handleResponse(const Message &response);

@@ -2,6 +2,7 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QLabel>
+#include <QHostAddress>
 
 ConfigDialog::ConfigDialog(QWidget *parent)
 : QDialog(parent),
@@ -39,14 +40,14 @@ QString ConfigDialog::getPassword()
 	return mPasswordField->text();
 }
 
-QHostAddress ConfigDialog::getIP()
+quint32 ConfigDialog::getIP()
 {
-	return QHostAddress(mIPField->text());
+	return QHostAddress(mIPField->text()).toIPv4Address();
 }
 
-QHostAddress ConfigDialog::getMask()
+quint32 ConfigDialog::getMask()
 {
-	return QHostAddress(mMaskField->text());
+	return QHostAddress(mMaskField->text()).toIPv4Address();
 }
 
 void ConfigDialog::setSSID(QString ssid)
@@ -59,13 +60,13 @@ void ConfigDialog::setPassword(QString password)
 	mPasswordField->setText(password);
 }
 
-void ConfigDialog::setIP(QHostAddress ip)
+void ConfigDialog::setIP(quint32 ip)
 {
-	mIPField->setText(ip.toString());
+	mIPField->setText(QHostAddress(ip).toString());
 }
 
 
-void ConfigDialog::setMask(QHostAddress mask)
+void ConfigDialog::setMask(quint32 mask)
 {
-	mMaskField->setText(mask.toString());
+	mMaskField->setText(QHostAddress(mask).toString());
 }

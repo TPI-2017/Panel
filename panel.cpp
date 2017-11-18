@@ -20,15 +20,33 @@ void Panel::init()
 	setEnabled(false);
 	show();
 
+
+	// El objeto de tipo Client se ejecuta en otro hilo. Esto significa que
+	// tiene su propia cola de eventos separada y todos sus slots se ejecutan
+	// en paralelo a este hilo pero siempre un slot tras otro.
 	mClient->moveToThread(mClientThread);
+
+	// Para accionar un apply() o restore() en Client.
 	connect(this, &Panel::applyRequested, mClient, &Client::apply);
 	connect(this, &Panel::restoreRequested, mClient, &Client::restore);
+
+	// Para setear el hostname y password en Client.
 	connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
 	connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
+
+	// Para que Client notifique a Panel sobre cambios o fin de operación.
 	connect(mClient, &Client::done, this, &Panel::clientDone);
 	connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
+
+	// Para que el modelo actualice la vista
 	connect(&mClient->model(), &SignModel::textChanged, ui->textMessageField, &QPlainTextEdit::setPlainText);
+
+	// Para pasar cambios en la vista al controlador (Client)
+
 	connect(this, &Panel::textChanged, mClient, &Client::setText);
+	connect(this, &Panel::wifiConfigChanged, mClient, &Client::setWifiConfig);
+
+	// Para pedir la reemisión de todos los valores del modelo
 	connect(this, &Panel::modelEmitNeeded, &mClient->model(), SignModel::emitValues);
 
 	if (!showLoginPrompt()) {
@@ -38,6 +56,7 @@ void Panel::init()
 
 	mClientThread->start();
 
+	// Traer los datos del servidor por primera vez
 	restoreSettings();
 }
 
@@ -54,6 +73,7 @@ void Panel::on_applyButton_clicked()
 
 void Panel::on_actionQuit_triggered()
 {
+	// TODO poner dialogo de confirmación si hubiera un cambio
 	close();
 }
 
@@ -228,6 +248,7 @@ void Panel::on_textMessageField_textChanged()
 void Panel::on_actionChange_configuration_triggered()
 {
 	ConfigDialog *configDialog = new ConfigDialog(this);
+	// Todas estas conexiones son para llenar el formulario
 	connect(&mClient->model(),
 		&SignModel::wifiSSIDChanged,
 		configDialog,
@@ -251,7 +272,10 @@ void Panel::on_actionChange_configuration_triggered()
 		return;
 	}
 
-	emit wifiConfigChanged(configDialog->getSSID(), configDialog->getPassword(), configDialog->getIP(), configDialog->getMask());
+	emit wifiConfigChanged(	configDialog->getSSID(),
+				configDialog->getPassword(),
+				configDialog->getIP(),
+				configDialog->getMask());
 	delete configDialog;
 }
 
@@ -261,11 +285,15 @@ bool Panel::showLoginPrompt()
 	LoginDialog *loginDialog = new LoginDialog(this);
 	int result = loginDialog->exec();
 
-	if (result != QDialog::Accepted)
+	if (result != QDialog::Accepted) {
 		return false;
+		delete loginDialog;
+	}
 
 	emit hostnameChanged(loginDialog->getHostname());
 	emit passwordChanged(loginDialog->getPassword());
+
+	delete loginDialog;
 	return true;
 }
 
