@@ -1,4 +1,4 @@
-#include "login_dialog.h"
+#include "logindialog.h"
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QLabel>
@@ -22,10 +22,14 @@ LoginDialog::LoginDialog(QWidget *parent)
 
 	connect(mButtons, &QDialogButtonBox::accepted, this, &QDialog::accept);
 	connect(mButtons, &QDialogButtonBox::rejected, this, &QDialog::reject);
-
 	mPasswordField->setEchoMode(QLineEdit::Password);
 	QString hostname = mSettings->value("Hostname").toString();
 	mHostnameField->setText(hostname);
+
+	if (hostname.length() == 0)
+		mHostnameField->setFocus(Qt::NoFocusReason);
+	else
+		mPasswordField->setFocus(Qt::NoFocusReason);
 }
 
 QString LoginDialog::getPassword()

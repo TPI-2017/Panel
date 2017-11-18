@@ -1,7 +1,7 @@
 #include "panel.h"
 #include "ui_panel.h"
 #include "translation.h"
-#include "login_dialog.h"
+#include "logindialog.h"
 #include "configdialog.h"
 #include <QMessageBox>
 

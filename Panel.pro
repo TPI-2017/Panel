@@ -46,22 +46,24 @@ SOURCES += \
 	translation.cpp \
 	controller.cpp \
 	client.cpp \
-	login_dialog.cpp \
 	protocol/Message.cpp \
 	connection.cpp \
 	test.cpp \
-	configdialog.cpp
+	configdialog.cpp \
+    passworddialog.cpp \
+    logindialog.cpp
 
 HEADERS += \
 	panel.h \
 	translation.h \
 	controller.h \
-	login_dialog.h \
 	client.h \
 	protocol/Message.h \
 	signmodel.h \
 	connection.h \
-	configdialog.h
+	configdialog.h \
+    passworddialog.h \
+    logindialog.h
 
 FORMS += \
         panel.ui
