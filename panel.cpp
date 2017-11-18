@@ -16,7 +16,7 @@ Panel::Panel(QWidget *parent)
 
 void Panel::init()
 {
-	on_textMessageField_textChanged();
+	validateText();
 	setEnabled(false);
 	show();
 
@@ -25,6 +25,7 @@ void Panel::init()
 	// tiene su propia cola de eventos separada y todos sus slots se ejecutan
 	// en paralelo a este hilo pero siempre un slot tras otro.
 	mClient->moveToThread(mClientThread);
+	// Acciones de la GUI
 
 	// Para accionar un apply() o restore() en Client.
 	connect(this, &Panel::applyRequested, mClient, &Client::apply);
@@ -36,7 +37,7 @@ void Panel::init()
 
 	// Para que Client notifique a Panel sobre cambios o fin de operación.
 	connect(mClient, &Client::done, this, &Panel::clientDone);
-	connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
+	connect(mClient, &Client::stateChanged, this, &Panel::updateState);
 
 	// Para que el modelo actualice la vista
 	connect(&mClient->model(), &SignModel::textChanged, ui->textMessageField, &QPlainTextEdit::setPlainText);
@@ -65,31 +66,26 @@ Panel::~Panel()
 	delete ui;
 }
 
-void Panel::on_applyButton_clicked()
+void Panel::applySettings()
 {
+	this->setEnabled(false);
 	emit textChanged(ui->textMessageField->toPlainText());
-	applySettings();
+	emit applyRequested();
 }
 
-void Panel::on_actionQuit_triggered()
+void Panel::restoreSettings()
+{
+	this->setEnabled(false);
+	emit restoreRequested();
+}
+
+void Panel::quit()
 {
 	// TODO poner dialogo de confirmación si hubiera un cambio
 	close();
 }
 
-void Panel::on_actionEspaniol_triggered()
-{
-	Translation::translate(Translation::Spanish);
-	ui->retranslateUi(this);
-}
-
-void Panel::on_actionEnglish_triggered()
-{
-	Translation::translate(Translation::English);
-	ui->retranslateUi(this);
-}
-
-void Panel::on_actionAbout_triggered()
+void Panel::showAboutDialog()
 {
 	QMessageBox::information(this, tr("Authors"),
 			    tr("\nLED Display - © 2017\n\n"
@@ -98,7 +94,7 @@ void Panel::on_actionAbout_triggered()
 			    QMessageBox::Ok, 0);
 }
 
-void Panel::on_actionChange_token_triggered()
+void Panel::showPasswordDialog()
 {
 
 }
@@ -108,24 +104,11 @@ void Panel::updateText(QString text)
 	ui->textMessageField->setPlainText(text);
 }
 
-void Panel::restoreSettings()
-{
-	this->setEnabled(false);
-	this->statusBar()->showMessage(tr("Busy"));
-	emit restoreRequested();
-}
-
-void Panel::applySettings()
-{
-	this->setEnabled(false);
-	emit applyRequested();
-}
-
 void Panel::clientDone(Client::ClientError status)
 {
 	this->statusBar()->showMessage(tr("Ready"));
 	if (status != Client::Ok) {
-		errorOccurred(status);
+		showError(status);
 
 		if (!showLoginPrompt()) {
 			close();
@@ -137,7 +120,7 @@ void Panel::clientDone(Client::ClientError status)
 	}
 }
 
-void Panel::errorOccurred(Client::ClientError error)
+void Panel::showError(Client::ClientError error)
 {
 	QString errorMessage;
 	switch (error) {
@@ -191,16 +174,17 @@ void Panel::errorOccurred(Client::ClientError error)
 		errorMessage = tr("Unknown error.");
 		break;
 	}
-	errorOccurred(errorMessage);
-}
 
-void Panel::errorOccurred(QString error)
-{
-	QMessageBox messageBox(QMessageBox::Critical, tr("An error occurred"), error, QMessageBox::Ok, this);
+	QMessageBox messageBox( QMessageBox::Critical,
+				tr("An error occurred"),
+				errorMessage,
+				QMessageBox::Ok,
+				this);
 	messageBox.exec();
 }
 
-void Panel::clientStateChanged(Client::State state)
+
+void Panel::updateState(Client::State state)
 {
 	QString text;
 	switch (state) {
@@ -229,7 +213,7 @@ void Panel::clientStateChanged(Client::State state)
 	this->statusBar()->showMessage(text);
 }
 
-void Panel::on_textMessageField_textChanged()
+void Panel::validateText()
 {
 	QString str = ui->textMessageField->toPlainText();
 	if(str.length() > Message::TEXT_SIZE)
@@ -245,7 +229,7 @@ void Panel::on_textMessageField_textChanged()
 	ui->remainingChars->setText(number);
 }
 
-void Panel::on_actionChange_configuration_triggered()
+void Panel::showConfigDialog()
 {
 	ConfigDialog *configDialog = new ConfigDialog(this);
 	// Todas estas conexiones son para llenar el formulario
@@ -295,9 +279,4 @@ bool Panel::showLoginPrompt()
 
 	delete loginDialog;
 	return true;
-}
-
-void Panel::on_restoreButton_clicked()
-{
-	restoreSettings();
 }

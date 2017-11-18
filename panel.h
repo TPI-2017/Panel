@@ -32,25 +32,19 @@ public slots:
 	void updateText(QString text);
 	// Slot para cuando se termina una operación
 	void clientDone(Client::ClientError);
-	void clientStateChanged(Client::State);
-	void errorOccurred(Client::ClientError);
+	void updateState(Client::State);
+	void showError(Client::ClientError);
 
 private slots:
-	void on_applyButton_clicked();
-	void on_actionQuit_triggered();
-	void on_actionEspaniol_triggered();
-	void on_actionEnglish_triggered();
-	void on_actionAbout_triggered();
-	void on_actionChange_token_triggered();
-	void on_textMessageField_textChanged();
-	void on_actionChange_configuration_triggered();
-
-	void on_restoreButton_clicked();
+	void showConfigDialog();
+	void showPasswordDialog();
+	void showAboutDialog();
+	void restoreSettings();
+	void applySettings();
+	void quit();
+	void validateText();
 
 private:
-	void applySettings();
-	void restoreSettings();
-	void errorOccurred(QString);
 	bool showLoginPrompt();
 
 	Ui::Panel *ui;
