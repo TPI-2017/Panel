@@ -17,7 +17,8 @@ bool Connection::connect(QString hostname)
 
 bool Connection::send(const Message &msg)
 {
-	if (mSocket.write(static_cast<const char*>(msg.data()), Message::MESSAGE_SIZE) == -1)
+	const char *data = static_cast<const char*>(msg.data());
+	if (mSocket.write(data , Message::MESSAGE_SIZE) == -1)
 		return false;
 
 	return mSocket.waitForBytesWritten(TIMEOUT_MS);
@@ -31,16 +32,17 @@ bool Connection::receive(Message &msg)
 	if (!mSocket.waitForReadyRead(TIMEOUT_MS))
 		return false;
 	bool success = (mSocket.read(data, Message::MESSAGE_SIZE) != -1);
-	
+
 	if (success)
 		msg = Message::createMessage(data);
-	
+
 	return success;
 }
 
 void Connection::disconnect()
 {
-	if (mSocket.isOpen() && mSocket.state() != QAbstractSocket::UnconnectedState) {
+	if (mSocket.isOpen()
+		&& mSocket.state() != QAbstractSocket::UnconnectedState) {
 		mSocket.close();
 		mSocket.waitForDisconnected(TIMEOUT_MS);
 	}

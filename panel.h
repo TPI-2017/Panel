@@ -24,11 +24,13 @@ signals:
 	void restoreRequested();
 	void hostnameChanged(QString);
 	void passwordChanged(QString);
+	void textChanged(QString);
 	void wifiConfigChanged(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
+	void modelEmitNeeded();
 
 public slots:
 	// Slots de actualización del modelo
-	void textChanged(QString text);
+	void updateText(QString text);
 	// Slot para cuando se termina una operación
 	void clientDone(Client::ClientError);
 	void clientStateChanged(Client::State);
@@ -44,11 +46,13 @@ private slots:
 	void on_textMessageField_textChanged();
 	void on_actionChange_configuration_triggered();
 
+	void on_restoreButton_clicked();
+
 private:
 	void applySettings();
 	void restoreSettings();
 	void errorOccurred(QString);
-	bool promptPassword();
+	bool showLoginPrompt();
 
 	Ui::Panel *ui;
 	Client *mClient;

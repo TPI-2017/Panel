@@ -56,6 +56,7 @@ public:
 		mWifiSubnetMask.commit();
 		mBlinkRate.commit();
 		mSlideRate.commit();
+		mDirty = false;
 	};
 	
 	// Devuelve verdadero si hay algún cambio no mandado al cartel

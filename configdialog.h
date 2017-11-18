@@ -15,6 +15,11 @@ public:
 	QString getPassword();
 	QHostAddress getIP();
 	QHostAddress getMask();
+public slots:
+	void setSSID(QString);
+	void setPassword(QString);
+	void setIP(QHostAddress);
+	void setMask(QHostAddress);
 private:
 	QLineEdit *mSSIDField;
 	QLineEdit *mPasswordField;

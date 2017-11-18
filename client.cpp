@@ -63,7 +63,7 @@ void Client::apply()
 			QHostAddress subnet = mSignModel.wifiSubnetMask();
 			uint8_t br = toFixedPoint(mSignModel.blinkRate());
 			uint8_t sr = toFixedPoint(mSignModel.blinkRate());
-			
+
 			Message textMsg;
 			textMsg = Message::createSetTextRequest	(
 								mPassword.toStdString().data(),
@@ -82,11 +82,14 @@ void Client::apply()
 			result = performInteraction(textMsg);
 			if (result == Ok)
 				result = performInteraction(wifiMsg);
-				
+
 		} else {
 			result = toClientError(mConnection.lastError());
 		}
-		
+
+		if (result == Ok)
+			mSignModel.commit();
+
 		mConnection.disconnect();
 		changeState(Disconnected);
 
@@ -100,30 +103,42 @@ void Client::restore()
 	changeState(Connecting);
 	if (mConnection.connect(mHostname)) {
 		changeState(Connected);
-		
+
 		Message getTextMsg;
-		getTextMsg = Message::createGetTextRequest(mPassword.toStdString().data());
+		const std::string password = mPassword.toStdString();
+		getTextMsg = Message::createGetTextRequest(password.data());
 		result = performInteraction(getTextMsg);
 
 		if (result == Ok) {
 			Message getWifiMsg;
-			getWifiMsg = Message::createGetWifiConfigRequest(mPassword.toStdString().data());
+			getWifiMsg = Message::createGetWifiConfigRequest(password.data());
 			result = performInteraction(getWifiMsg);
 		}
-			
+
 	} else {
 		result = toClientError(mConnection.lastError());
 	}
-	
+
+	mSignModel.emitValues();
+	mSignModel.commit();
+
 	mConnection.disconnect();
 	changeState(Disconnected);
 	emit done(result);
 }
 
-void Client::setText(QString text, float blinkRate, float slideRate)
+void Client::setText(QString text)
 {
 	mSignModel.setText(text);
+}
+
+void Client::setBlinkRate(float blinkRate)
+{
 	mSignModel.setBlinkRate(blinkRate);
+}
+
+void Client::setSlideRate(float slideRate)
+{
 	mSignModel.setSlideRate(slideRate);
 }
 
@@ -137,7 +152,10 @@ void Client::setHostname(QString hostname)
 	mHostname = hostname;
 }
 
-void Client::setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask)
+void Client::setWifiConfig(QString SSID,
+			QString wifiPassword,
+			QHostAddress ip,
+			QHostAddress subnetMask)
 {
 	mSignModel.setWifiSSID(SSID);
 	mSignModel.setWifiPassword(wifiPassword);
@@ -167,7 +185,7 @@ Client::ClientError Client::handleResponse(const Message &response)
 {
 	if (response.empty())
 		return WrongResponse;
-	
+
 	if (response.responseCode() != Message::OK) {
 		switch (response.responseCode()) {
 		case Message::MalformedPacket:
@@ -182,7 +200,7 @@ Client::ClientError Client::handleResponse(const Message &response)
 			return ServerBadSubnetMask;
 		}
 	}
-		
+
 	switch (response.type()) {
 	case Message::GetWiFiConfigResponse:
 		mSignModel.setWifiSSID(QString::fromLatin1(response.wifiSSID()));

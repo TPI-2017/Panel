@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QSettings>
 
 class LoginDialog : public QDialog
 {
@@ -16,6 +17,7 @@ private:
 	QLineEdit *mHostnameField;
 	QLineEdit *mPasswordField;
 	QDialogButtonBox *mButtons;
+	QSettings *mSettings;
 };
 
 #endif

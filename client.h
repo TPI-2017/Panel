@@ -68,8 +68,10 @@ public slots:
 	void apply();
 	// Actualiza el modelo con el estado actual del cartel.
 	void restore();
-	// Estos getters actualizan el modelo. No mandan cambios al cartel.
-	void setText(QString text, float blinkRate, float slideRate);
+	// Estos setters actualizan el modelo. No mandan cambios al cartel.
+	void setText(QString text);
+	void setBlinkRate(float blinkRate);
+	void setSlideRate(float slideRate);
 	void setWifiConfig(QString SSID, QString wifiPassword, QHostAddress ip, QHostAddress subnetMask);
 signals:
 	void stateChanged(State state);

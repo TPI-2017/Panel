@@ -17,43 +17,27 @@ Panel::Panel(QWidget *parent)
 void Panel::init()
 {
 	on_textMessageField_textChanged();
+	setEnabled(false);
 	show();
-	
+
 	mClient->moveToThread(mClientThread);
-	QObject::connect(this,
-			&Panel::applyRequested,
-			mClient,
-			&Client::apply);
-	QObject::connect(this,
-			&Panel::restoreRequested,
-	                mClient,
-	                &Client::restore);
-	QObject::connect(this,
-			&Panel::hostnameChanged,
-	                mClient,
-	                &Client::setHostname);
-	QObject::connect(this,
-			&Panel::passwordChanged,
-	                mClient,
-	                &Client::setWorkingPassword);
-	QObject::connect(mClient,
-			&Client::done,
-			this,
-			&Panel::clientDone);
-	QObject::connect(mClient,
-			&Client::stateChanged,
-			this,
-			&Panel::clientStateChanged);
-	QObject::connect(&mClient->model(),
-			&SignModel::textChanged,
-			ui->textMessageField,
-			&QPlainTextEdit::setPlainText);
-			
-	if (!promptPassword())
+	connect(this, &Panel::applyRequested, mClient, &Client::apply);
+	connect(this, &Panel::restoreRequested, mClient, &Client::restore);
+	connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
+	connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
+	connect(mClient, &Client::done, this, &Panel::clientDone);
+	connect(mClient, &Client::stateChanged, this, &Panel::clientStateChanged);
+	connect(&mClient->model(), &SignModel::textChanged, ui->textMessageField, &QPlainTextEdit::setPlainText);
+	connect(this, &Panel::textChanged, mClient, &Client::setText);
+	connect(this, &Panel::modelEmitNeeded, &mClient->model(), SignModel::emitValues);
+
+	if (!showLoginPrompt()) {
 		close();
+		return;
+	}
 
 	mClientThread->start();
-	
+
 	restoreSettings();
 }
 
@@ -64,6 +48,7 @@ Panel::~Panel()
 
 void Panel::on_applyButton_clicked()
 {
+	emit textChanged(ui->textMessageField->toPlainText());
 	applySettings();
 }
 
@@ -98,7 +83,7 @@ void Panel::on_actionChange_token_triggered()
 
 }
 
-void Panel::textChanged(QString text)
+void Panel::updateText(QString text)
 {
 	ui->textMessageField->setPlainText(text);
 }
@@ -119,12 +104,13 @@ void Panel::applySettings()
 void Panel::clientDone(Client::ClientError status)
 {
 	this->statusBar()->showMessage(tr("Ready"));
-	if (status != Client::Ok)
+	if (status != Client::Ok) {
 		errorOccurred(status);
-		
-	if (status == Client::ServerBadPassword) {
-		if (!promptPassword())
+
+		if (!showLoginPrompt()) {
 			close();
+			return;
+		}
 		restoreSettings();
 	} else {
 		this->setEnabled(true);
@@ -225,30 +211,52 @@ void Panel::clientStateChanged(Client::State state)
 
 void Panel::on_textMessageField_textChanged()
 {
-	if(ui->textMessageField->toPlainText().length() > Message::TEXT_SIZE)
+	QString str = ui->textMessageField->toPlainText();
+	if(str.length() > Message::TEXT_SIZE)
 	{
-		int diff = ui->textMessageField->toPlainText().length() - Message::TEXT_SIZE;
-		QString newStr = ui->textMessageField->toPlainText();
-		newStr.chop(diff);
-		ui->textMessageField->setPlainText(newStr);
+		int diff = str.length() - Message::TEXT_SIZE;
+		str.chop(diff);
+		ui->textMessageField->setPlainText(str);
 		QTextCursor cursor(ui->textMessageField->textCursor());
 		cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
 		ui->textMessageField->setTextCursor(cursor);
 	}
-	ui->remainingChars->setText(QString::number(Message::TEXT_SIZE - ui->textMessageField->toPlainText().length()));
+	QString number = QString::number(Message::TEXT_SIZE - str.length());
+	ui->remainingChars->setText(number);
 }
 
 void Panel::on_actionChange_configuration_triggered()
 {
 	ConfigDialog *configDialog = new ConfigDialog(this);
+	connect(&mClient->model(),
+		&SignModel::wifiSSIDChanged,
+		configDialog,
+		&ConfigDialog::setSSID);
+	connect(&mClient->model(),
+		&SignModel::wifiPasswordChanged,
+		configDialog,
+		&ConfigDialog::setPassword);
+	connect(&mClient->model(),
+		&SignModel::wifiIPChanged,
+		configDialog,
+		&ConfigDialog::setIP);
+	connect(&mClient->model(),
+		&SignModel::wifiSubnetMaskChanged,
+		configDialog,
+		&ConfigDialog::setMask);
+	emit modelEmitNeeded();
+
 	if (configDialog->exec() != QDialog::Accepted) {
+		delete configDialog;
 		return;
 	}
+
 	emit wifiConfigChanged(configDialog->getSSID(), configDialog->getPassword(), configDialog->getIP(), configDialog->getMask());
+	delete configDialog;
 }
 
 // True si apretó OK, false si no.
-bool Panel::promptPassword()
+bool Panel::showLoginPrompt()
 {
 	LoginDialog *loginDialog = new LoginDialog(this);
 	int result = loginDialog->exec();
@@ -259,4 +267,9 @@ bool Panel::promptPassword()
 	emit hostnameChanged(loginDialog->getHostname());
 	emit passwordChanged(loginDialog->getPassword());
 	return true;
+}
+
+void Panel::on_restoreButton_clicked()
+{
+	restoreSettings();
 }
