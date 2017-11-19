@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QApplication>
 #include <QThread>
+#include <QCloseEvent>
 #include "client.h"
 
 namespace Ui {
@@ -42,6 +43,8 @@ public slots:
 	void showError(Client::ClientError);
 	void updateBlinkRate(float);
 	void updateSlideRate(float);
+protected:
+	virtual void closeEvent(QCloseEvent *event);
 
 private slots:
 	void showConfigDialog();
@@ -53,9 +56,13 @@ private slots:
 	void validateText();
 	void blinkRateCheckChanged(int state);
 	void slideRateCheckChanged(int state);
+	void blinkRateWidgetChanged(double value);
+	void slideRateWidgetChanged(double value);
+	void updateButtons(bool pendingChanges);
 
 private:
 	bool showLoginPrompt();
+	bool mPendingChanges = false;
 
 	Ui::Panel *ui;
 	Client *mClient;

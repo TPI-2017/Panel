@@ -14,6 +14,11 @@ public:
 	}
 
 	// Getters
+	const QString &password() const
+	{
+		return mPassword;
+	}
+
 	const QString &text() const
 	{
 		return mText;
@@ -63,49 +68,57 @@ public slots:
 	void setPassword(QString text)
 	{
 		mPassword = text;
+		mPasswordDirty = true;
 		emit passwordChanged(text);
 	}
 
 	void setText(QString text)
 	{
 		mText = text;
+		mTextDirty = true;
 		emit textChanged(text);
-	}
-
-	void setWifiSSID(QString ssid)
-	{
-		mWifiSSID = ssid;
-		emit wifiSSIDChanged(ssid);
-	}
-
-	void setWifiPassword(QString password)
-	{
-		mWifiPassword = password;
-		emit wifiPasswordChanged(password);
-	}
-
-	void setWifiIP(quint32 ip)
-	{
-		mWifiIP = ip;
-		emit wifiIPChanged(ip);
-	}
-
-	void setWifiSubnetMask(quint32 subnetMask)
-	{
-		mWifiSubnetMask = subnetMask;
-		emit wifiSubnetMaskChanged(subnetMask);
 	}
 
 	void setBlinkRate(float blinkRate)
 	{
 		mBlinkRate = blinkRate;
+		mTextDirty = true;
 		emit blinkRateChanged(blinkRate);
 	}
 
 	void setSlideRate(float slideRate)
 	{
 		mSlideRate = slideRate;
+		mTextDirty = true;
 		emit slideRateChanged(slideRate);
+	}
+
+	void setWifiSSID(QString ssid)
+	{
+		mWifiSSID = ssid;
+		mWifiConfigDirty = true;
+		emit wifiSSIDChanged(ssid);
+	}
+
+	void setWifiPassword(QString password)
+	{
+		mWifiPassword = password;
+		mWifiConfigDirty = true;
+		emit wifiPasswordChanged(password);
+	}
+
+	void setWifiIP(quint32 ip)
+	{
+		mWifiIP = ip;
+		mWifiConfigDirty = true;
+		emit wifiIPChanged(ip);
+	}
+
+	void setWifiSubnetMask(quint32 subnetMask)
+	{
+		mWifiSubnetMask = subnetMask;
+		mWifiConfigDirty = true;
+		emit wifiSubnetMaskChanged(subnetMask);
 	}
 
 	void emitValues()
@@ -120,15 +133,48 @@ public slots:
 		emit slideRateChanged(mSlideRate);
 	}
 
+	bool isPasswordDirty() const
+	{
+		return mPasswordDirty;
+	}
+
+	bool isTextDirty() const
+	{
+		return mTextDirty;
+	}
+
+	bool isWifiConfigDirty() const
+	{
+		return mWifiConfigDirty;
+	}
+
+	void clearPassword()
+	{
+		mPasswordDirty = false;
+	}
+
+	void clearText()
+	{
+		mTextDirty = false;
+	}
+
+	void clearWifiConfig()
+	{
+		mWifiConfigDirty = false;
+	}
+
 private:
 	QString mPassword;
 	QString mText;
 	QString mWifiSSID;
 	QString mWifiPassword;
-	quint32 mWifiIP;
-	quint32 mWifiSubnetMask;
-	float mBlinkRate;
-	float mSlideRate;
+	quint32 mWifiIP = 0;
+	quint32 mWifiSubnetMask = 0;
+	float mBlinkRate = 0.0;
+	float mSlideRate = 0.0;
+	bool mPasswordDirty = false;
+	bool mTextDirty = false;
+	bool mWifiConfigDirty = false;
 };
 
 #endif
