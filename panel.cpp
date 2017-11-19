@@ -26,30 +26,18 @@ void Panel::init()
 	// en paralelo a este hilo pero siempre un slot tras otro.
 	mClient->moveToThread(mClientThread);
 	// Widgets del panel
-	connect(ui->aboutAction,
-		&QAction::triggered,
-		this,
-		&Panel::showAboutDialog);
-	connect(ui->quitAction,
-		&QAction::triggered,
-		this,
-		&Panel::quit);
-	connect(ui->changePasswordAction,
-		&QAction::triggered,
-		this,
-		&Panel::showPasswordDialog);
-	connect(ui->changeConfigAction,
-		&QAction::triggered,
-		this,
-		&Panel::showConfigDialog);
-	connect(ui->applyButton,
-		&QPushButton::clicked,
-		this,
-		&Panel::applySettings);
-	connect(ui->restoreButton,
-		&QPushButton::clicked,
-		this,
-		&Panel::restoreSettings);
+	connect(ui->aboutAction, &QAction::triggered,
+		this, &Panel::showAboutDialog);
+	connect(ui->quitAction, &QAction::triggered,
+		this, &Panel::quit);
+	connect(ui->changePasswordAction, &QAction::triggered,
+		this, &Panel::showPasswordDialog);
+	connect(ui->changeConfigAction, &QAction::triggered,
+		this, &Panel::showConfigDialog);
+	connect(ui->applyButton, &QPushButton::clicked,
+		this, &Panel::applySettings);
+	connect(ui->restoreButton, &QPushButton::clicked,
+		this, &Panel::restoreSettings);
 
 	// Para validar la longitud y codificación del texto
 	connect(ui->textMessageField,
@@ -67,27 +55,46 @@ void Panel::init()
 		&Panel::blinkRateCheckChanged);
 
 	// Para accionar un apply() o restore() en Client.
-	connect(this, &Panel::applyRequested, mClient, &Client::apply);
-	connect(this, &Panel::restoreRequested, mClient, &Client::restore);
+	connect(this, &Panel::applyRequested,
+		mClient, &Client::apply);
+	connect(this, &Panel::restoreRequested,
+	mClient, &Client::restore);
 
 	// Para setear el hostname y password en Client.
-	connect(this, &Panel::hostnameChanged, mClient, &Client::setHostname);
-	connect(this, &Panel::passwordChanged, mClient, &Client::setWorkingPassword);
+	connect(this, &Panel::hostnameChanged,
+		mClient, &Client::setHostname);
+	connect(this, &Panel::passwordChanged,
+		mClient, &Client::setWorkingPassword);
 
 	// Para que Client notifique a Panel sobre cambios o fin de operación.
-	connect(mClient, &Client::done, this, &Panel::clientDone);
-	connect(mClient, &Client::stateChanged, this, &Panel::updateState);
+	connect(mClient, &Client::done,
+		this, &Panel::clientDone);
+	connect(mClient, &Client::stateChanged,
+		this, &Panel::updateState);
 
 	// Para que el modelo actualice la vista
-	connect(&mClient->model(), &SignModel::textChanged, ui->textMessageField, &QPlainTextEdit::setPlainText);
+	connect(&mClient->model(), &SignModel::textChanged,
+		ui->textMessageField, &QPlainTextEdit::setPlainText);
+	connect(&mClient->model(), &SignModel::blinkRateChanged,
+		this, &Panel::updateBlinkRate);
+	connect(&mClient->model(), &SignModel::slideRateChanged,
+		this, &Panel::updateSlideRate);
 
 	// Para pasar cambios en la vista al controlador (Client)
-	connect(this, &Panel::textChanged, mClient, &Client::setText);
-	connect(this, &Panel::wifiConfigChanged, mClient, &Client::setWifiConfig);
-	connect(this, &Panel::setPasswordIssued, mClient, &Client::setPassword);
+	connect(this, &Panel::textChanged,
+		mClient, &Client::setText);
+	connect(this, &Panel::wifiConfigChanged,
+		mClient, &Client::setWifiConfig);
+	connect(this, &Panel::setPasswordIssued,
+		mClient, &Client::setPassword);
+	connect(this, &Panel::blinkRateChanged,
+		mClient, &Client::setBlinkRate);
+	connect(this, &Panel::slideRateChanged,
+		mClient, &Client::setSlideRate);
 
 	// Para pedir la reemisión de todos los valores del modelo
-	connect(this, &Panel::modelEmitNeeded, &mClient->model(), &SignModel::emitValues);
+	connect(this, &Panel::modelEmitNeeded,
+		&mClient->model(), &SignModel::emitValues);
 
 	if (!showLoginPrompt()) {
 		close();
@@ -100,28 +107,22 @@ void Panel::init()
 	restoreSettings();
 }
 
-Panel::~Panel()
+// True si apretó OK, false si no.
+bool Panel::showLoginPrompt()
 {
-	delete ui;
-}
+	LoginDialog *loginDialog = new LoginDialog(this);
+	int result = loginDialog->exec();
 
-void Panel::applySettings()
-{
-	this->setEnabled(false);
-	emit textChanged(ui->textMessageField->toPlainText());
-	emit applyRequested();
-}
+	if (result != QDialog::Accepted) {
+		return false;
+		delete loginDialog;
+	}
 
-void Panel::restoreSettings()
-{
-	this->setEnabled(false);
-	emit restoreRequested();
-}
+	emit hostnameChanged(loginDialog->getHostname());
+	emit passwordChanged(loginDialog->getPassword());
 
-void Panel::quit()
-{
-	// TODO poner dialogo de confirmación si hubiera un cambio
-	close();
+	delete loginDialog;
+	return true;
 }
 
 void Panel::showAboutDialog()
@@ -131,6 +132,24 @@ void Panel::showAboutDialog()
 			    "García, Agustín\nLevy, Santiago\n"
 			    "Romero Dapozo, Ramiro\nTernouski, Sebastian Nahuel\n"),
 			    QMessageBox::Ok, 0);
+}
+
+void Panel::applySettings()
+{
+	this->setEnabled(false);
+	emit textChanged(ui->textMessageField->toPlainText());
+	emit blinkRateChanged(ui->frequencySpinBox->value());
+	float slideRate = ui->speedSpinBox->value();
+	if (ui->directionBox->currentIndex() == 0)
+		slideRate *= -1.0;
+	emit slideRateChanged(slideRate);
+	emit applyRequested();
+}
+
+void Panel::restoreSettings()
+{
+	this->setEnabled(false);
+	emit restoreRequested();
 }
 
 void Panel::showPasswordDialog()
@@ -147,6 +166,27 @@ void Panel::updateText(QString text)
 	ui->textMessageField->setPlainText(text);
 }
 
+void Panel::updateBlinkRate(float blinkRate)
+{
+	ui->blinkCheckBox->setCheckState(blinkRate ? Qt::Checked : Qt::Unchecked);
+	ui->frequencySpinBox->setEnabled(blinkRate != 0);
+	ui->frequencySpinBox->setValue(blinkRate);
+}
+
+void Panel::updateSlideRate(float slideRate)
+{
+	if (slideRate < 0) {
+		slideRate = std::abs(slideRate);
+		ui->directionBox->setCurrentIndex(0);
+	} else {
+		ui->directionBox->setCurrentIndex(1);
+	}
+	ui->slideCheckBox->setCheckState(slideRate ? Qt::Checked : Qt::Unchecked);
+	ui->speedSpinBox->setEnabled(slideRate != 0);
+	ui->directionBox->setEnabled(slideRate != 0);
+	ui->speedSpinBox->setValue(slideRate);
+}
+
 void Panel::clientDone(Client::ClientError status)
 {
 	this->statusBar()->showMessage(tr("Ready"));
@@ -161,6 +201,103 @@ void Panel::clientDone(Client::ClientError status)
 	} else {
 		this->setEnabled(true);
 	}
+}
+
+void Panel::updateState(Client::State state)
+{
+	QString text;
+	switch (state) {
+	case Client::NotReady:
+		text = tr("Not ready.");
+		break;
+	case Client::Disconnected:
+		text = tr("Ready.");
+		break;
+	case Client::Connecting:
+		text = tr("Connecting to host...");
+		break;
+	case Client::Connected:
+		text = tr("Connected.");
+		break;
+	case Client::RequestSent:
+		text = tr("Waiting for response...");
+		break;
+	case Client::ResponseReceived:
+		text = tr("Response received.");
+		break;
+	default:
+		break;
+	}
+
+	this->statusBar()->showMessage(text);
+}
+
+
+void Panel::validateText()
+{
+	QString str = ui->textMessageField->toPlainText();
+	if(str.length() > Message::TEXT_SIZE)
+	{
+		int diff = str.length() - Message::TEXT_SIZE;
+		str.chop(diff);
+		ui->textMessageField->setPlainText(str);
+		QTextCursor cursor(ui->textMessageField->textCursor());
+		cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+		ui->textMessageField->setTextCursor(cursor);
+	}
+	QString number = QString::number(Message::TEXT_SIZE - str.length());
+	ui->remainingChars->setText(number);
+}
+
+void Panel::blinkRateCheckChanged(int state)
+{
+	bool checked = state == Qt::Checked;
+	ui->frequencySpinBox->setEnabled(checked);
+	if (!checked)
+		ui->frequencySpinBox->setValue(0);
+}
+
+void Panel::slideRateCheckChanged(int state)
+{
+	bool checked = state == Qt::Checked;
+	ui->speedSpinBox->setEnabled(checked);
+	ui->directionBox->setEnabled(checked);
+	if (!checked)
+		ui->speedSpinBox->setValue(0);
+}
+
+void Panel::showConfigDialog()
+{
+	ConfigDialog *configDialog = new ConfigDialog(this);
+	// Todas estas conexiones son para llenar el formulario
+	connect(&mClient->model(),
+		&SignModel::wifiSSIDChanged,
+		configDialog,
+		&ConfigDialog::setSSID);
+	connect(&mClient->model(),
+		&SignModel::wifiPasswordChanged,
+		configDialog,
+		&ConfigDialog::setPassword);
+	connect(&mClient->model(),
+		&SignModel::wifiIPChanged,
+		configDialog,
+		&ConfigDialog::setIP);
+	connect(&mClient->model(),
+		&SignModel::wifiSubnetMaskChanged,
+		configDialog,
+		&ConfigDialog::setMask);
+	emit modelEmitNeeded();
+
+	if (configDialog->exec() != QDialog::Accepted) {
+		delete configDialog;
+		return;
+	}
+
+	emit wifiConfigChanged(	configDialog->getSSID(),
+				configDialog->getPassword(),
+				configDialog->getIP(),
+				configDialog->getMask());
+	delete configDialog;
 }
 
 void Panel::showError(Client::ClientError error)
@@ -226,113 +363,13 @@ void Panel::showError(Client::ClientError error)
 	messageBox.exec();
 }
 
-
-void Panel::updateState(Client::State state)
+void Panel::quit()
 {
-	QString text;
-	switch (state) {
-	case Client::NotReady:
-		text = tr("Not ready.");
-		break;
-	case Client::Disconnected:
-		text = tr("Ready.");
-		break;
-	case Client::Connecting:
-		text = tr("Connecting to host...");
-		break;
-	case Client::Connected:
-		text = tr("Connected.");
-		break;
-	case Client::RequestSent:
-		text = tr("Waiting for response...");
-		break;
-	case Client::ResponseReceived:
-		text = tr("Response received.");
-		break;
-	default:
-		break;
-	}
-
-	this->statusBar()->showMessage(text);
+	// TODO poner dialogo de confirmación si hubiera un cambio
+	close();
 }
 
-void Panel::validateText()
+Panel::~Panel()
 {
-	QString str = ui->textMessageField->toPlainText();
-	if(str.length() > Message::TEXT_SIZE)
-	{
-		int diff = str.length() - Message::TEXT_SIZE;
-		str.chop(diff);
-		ui->textMessageField->setPlainText(str);
-		QTextCursor cursor(ui->textMessageField->textCursor());
-		cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
-		ui->textMessageField->setTextCursor(cursor);
-	}
-	QString number = QString::number(Message::TEXT_SIZE - str.length());
-	ui->remainingChars->setText(number);
-}
-
-void Panel::slideRateCheckChanged(int state)
-{
-	bool checked = state == Qt::Checked;
-	ui->speedSpinBox->setEnabled(checked);
-
-}
-
-void Panel::blinkRateCheckChanged(int state)
-{
-	bool checked = state == Qt::Checked;
-	ui->frequencySpinBox->setEnabled(checked);
-}
-
-void Panel::showConfigDialog()
-{
-	ConfigDialog *configDialog = new ConfigDialog(this);
-	// Todas estas conexiones son para llenar el formulario
-	connect(&mClient->model(),
-		&SignModel::wifiSSIDChanged,
-		configDialog,
-		&ConfigDialog::setSSID);
-	connect(&mClient->model(),
-		&SignModel::wifiPasswordChanged,
-		configDialog,
-		&ConfigDialog::setPassword);
-	connect(&mClient->model(),
-		&SignModel::wifiIPChanged,
-		configDialog,
-		&ConfigDialog::setIP);
-	connect(&mClient->model(),
-		&SignModel::wifiSubnetMaskChanged,
-		configDialog,
-		&ConfigDialog::setMask);
-	emit modelEmitNeeded();
-
-	if (configDialog->exec() != QDialog::Accepted) {
-		delete configDialog;
-		return;
-	}
-
-	emit wifiConfigChanged(	configDialog->getSSID(),
-				configDialog->getPassword(),
-				configDialog->getIP(),
-				configDialog->getMask());
-	delete configDialog;
-}
-
-// True si apretó OK, false si no.
-bool Panel::showLoginPrompt()
-{
-	LoginDialog *loginDialog = new LoginDialog(this);
-	int result = loginDialog->exec();
-
-	if (result != QDialog::Accepted) {
-		return false;
-		delete loginDialog;
-	}
-
-	emit hostnameChanged(loginDialog->getHostname());
-	emit passwordChanged(loginDialog->getPassword());
-
-	delete loginDialog;
-	return true;
+	delete ui;
 }

@@ -21,8 +21,10 @@ ConfigDialog::ConfigDialog(QWidget *parent)
 
 	formLayout->addRow(new QLabel(tr("Network Name (SSID):")), mSSIDField);
 	formLayout->addRow(new QLabel(tr("Network password:")), mPasswordField);
-	formLayout->addRow(new QLabel(tr("IP:")), mIPField);
-	formLayout->addRow(new QLabel(tr("Subnet mask:")), mMaskField);
+	// Sacamos esto hasta que se encuente forma de cargar un certificado
+	// junto a la IP.
+	// formLayout->addRow(new QLabel(tr("IP:")), mIPField);
+	// formLayout->addRow(new QLabel(tr("Subnet mask:")), mMaskField);
 
 	connect(mButtons, &QDialogButtonBox::accepted, this, &QDialog::accept);
 	connect(mButtons, &QDialogButtonBox::rejected, this, &QDialog::reject);

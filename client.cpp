@@ -4,14 +4,17 @@
 #include <QThread>
 #include <iostream>
 
-static uint8_t toFixedPoint(float n)
+template <typename T, uint8_t F>
+static T fixed(float num)
 {
-	return 0;
+	num = std::max<float>(-7.0, std::min<float>(num, 7.0));
+	return static_cast<T>(num * static_cast<float>(1 << F));
 }
 
-static uint8_t toFloatingPoint(uint8_t n)
+template <typename T, uint8_t F>
+static float floating(T fp)
 {
-	return 0;
+	return static_cast<float>(fp / static_cast<float>(1 << F));
 }
 
 Client::ClientError Client::toClientError(QAbstractSocket::SocketError error)
@@ -51,75 +54,76 @@ Client::Client()
 void Client::apply()
 {
 	ClientError result = Ok;
-	if (mSignModel.dirty())	{
-		changeState(Connecting);
-		if (mConnection.connect(mHostname)) {
-			changeState(Connected);
-			QString text = mSignModel.text();
-			QString ssid = mSignModel.wifiSSID();
-			QString password = mSignModel.wifiPassword();
-			quint32 ip = mSignModel.wifiIP();
-			quint32 subnet = mSignModel.wifiSubnetMask();
-			uint8_t br = toFixedPoint(mSignModel.blinkRate());
-			uint8_t sr = toFixedPoint(mSignModel.blinkRate());
+	Message textMsg;
+	Message wifiMsg;
+	auto text = mSignModel.text();
+	auto ssid = mSignModel.wifiSSID();
+	auto password = mSignModel.wifiPassword();
+	auto ip = mSignModel.wifiIP();
+	auto subnet = mSignModel.wifiSubnetMask();
+	auto br = fixed<uint8_t, 4>(mSignModel.blinkRate());
+	auto sr = fixed<int8_t, 4>(mSignModel.slideRate());
 
-			Message textMsg;
-			textMsg = Message::createSetTextRequest	(
-								mPassword.toStdString().data(),
-								br,
-								sr,
-								text.toStdString().data()
-								);
-			Message wifiMsg;
-			wifiMsg = Message::createSetWifiConfigRequest	(
-									mPassword.toStdString().data(),
-									ssid.toStdString().data(),
-									password.toStdString().data(),
-									ip,
-									subnet
-									);
-			result = performInteraction(textMsg);
-			if (result == Ok)
-				result = performInteraction(wifiMsg);
-
-		} else {
-			result = toClientError(mConnection.lastError());
-		}
-
-		if (result == Ok)
-			mSignModel.commit();
-
-		mConnection.disconnect();
-		changeState(Disconnected);
-
+	changeState(Connecting);
+	if (!mConnection.connect(mHostname)) {
+		result = toClientError(mConnection.lastError());
+		goto stop;
 	}
+	changeState(Connected);
+
+	textMsg = Message::createSetTextRequest
+					(
+					mPassword.toStdString().data(),
+					br,
+					sr,
+					text.toStdString().data()
+					);
+	wifiMsg = Message::createSetWifiConfigRequest
+					(
+					mPassword.toStdString().data(),
+					ssid.toStdString().data(),
+					password.toStdString().data(),
+					ip,
+					subnet
+					);
+
+	result = performInteraction(textMsg);
+	if (result == Ok)
+		result = performInteraction(wifiMsg);
+
+
+stop:
+	mConnection.disconnect();
+	changeState(Disconnected);
 	emit done(result);
 }
 
 void Client::restore()
 {
 	ClientError result;
+	Message getTextMsg;
+	Message getWifiMsg;
+
+	auto password = mPassword.toStdString();
+	getTextMsg = Message::createGetTextRequest(password.data());
+	getWifiMsg = Message::createGetWifiConfigRequest(password.data());
+
 	changeState(Connecting);
-	if (mConnection.connect(mHostname)) {
-		changeState(Connected);
-
-		Message getTextMsg;
-		const std::string password = mPassword.toStdString();
-		getTextMsg = Message::createGetTextRequest(password.data());
-		result = performInteraction(getTextMsg);
-
-		if (result == Ok) {
-			Message getWifiMsg;
-			getWifiMsg = Message::createGetWifiConfigRequest(password.data());
-			result = performInteraction(getWifiMsg);
-		}
-	} else {
+	if (!mConnection.connect(mHostname)) {
 		result = toClientError(mConnection.lastError());
+		goto stop;
 	}
 
-	mSignModel.emitValues();
-	mSignModel.commit();
+	changeState(Connected);
 
+
+	result = performInteraction(getTextMsg);
+
+	if (result == Ok)
+		result = performInteraction(getWifiMsg);
+
+stop:
+	mSignModel.emitValues();
 	mConnection.disconnect();
 	changeState(Disconnected);
 	emit done(result);
@@ -213,7 +217,8 @@ Client::ClientError Client::handleResponse(const Message &response)
 		break;
 	case Message::GetTextResponse:
 		mSignModel.setText(QString::fromLatin1(response.text()));
-		#warning Falta blink y slide
+		mSignModel.setBlinkRate(floating<uint8_t, 4>(response.blinkRate()));
+		mSignModel.setSlideRate(floating<int8_t, 4>(response.slideRate()));
 		break;
 	default:
 		break;
