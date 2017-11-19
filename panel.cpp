@@ -169,6 +169,7 @@ void Panel::updateText(QString text)
 void Panel::updateBlinkRate(float blinkRate)
 {
 	ui->blinkCheckBox->setCheckState(blinkRate ? Qt::Checked : Qt::Unchecked);
+	ui->frequencySpinBox->setEnabled(blinkRate != 0);
 	ui->frequencySpinBox->setValue(blinkRate);
 }
 
@@ -181,6 +182,7 @@ void Panel::updateSlideRate(float slideRate)
 		ui->directionBox->setCurrentIndex(1);
 	}
 	ui->slideCheckBox->setCheckState(slideRate ? Qt::Checked : Qt::Unchecked);
+	ui->speedSpinBox->setEnabled(slideRate != 0);
 	ui->directionBox->setEnabled(slideRate != 0);
 	ui->speedSpinBox->setValue(slideRate);
 }
