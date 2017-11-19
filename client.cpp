@@ -53,17 +53,7 @@ Client::Client()
 
 void Client::apply()
 {
-	ClientError result = Ok;
-	Message textMsg;
-	Message wifiMsg;
-	auto text = mSignModel.text();
-	auto ssid = mSignModel.wifiSSID();
-	auto password = mSignModel.wifiPassword();
-	auto ip = mSignModel.wifiIP();
-	auto subnet = mSignModel.wifiSubnetMask();
-	auto br = fixed<uint8_t, 4>(mSignModel.blinkRate());
-	auto sr = fixed<int8_t, 4>(mSignModel.slideRate());
-
+	ClientError result;
 	changeState(Connecting);
 	if (!mConnection.connect(mHostname)) {
 		result = toClientError(mConnection.lastError());
@@ -71,26 +61,61 @@ void Client::apply()
 	}
 	changeState(Connected);
 
-	textMsg = Message::createSetTextRequest
-					(
-					mPassword.toStdString().data(),
-					br,
-					sr,
-					text.toStdString().data()
-					);
-	wifiMsg = Message::createSetWifiConfigRequest
-					(
-					mPassword.toStdString().data(),
-					ssid.toStdString().data(),
-					password.toStdString().data(),
-					ip,
-					subnet
-					);
+	if (mSignModel.isTextDirty()) {
+		Message textMsg;
+		auto text = mSignModel.text();
+		auto br = fixed<uint8_t, 4>(mSignModel.blinkRate());
+		auto sr = fixed<int8_t, 4>(mSignModel.slideRate());
 
-	result = performInteraction(textMsg);
-	if (result == Ok)
+		textMsg = Message::createSetTextRequest
+						(
+						mPassword.toStdString().data(),
+						br,
+						sr,
+						text.toStdString().data()
+						);
+
+		result = performInteraction(textMsg);
+		if (result != Ok)
+			goto stop;
+		else
+			mSignModel.clearText();
+	}
+
+	if (mSignModel.isWifiConfigDirty()) {
+		Message wifiMsg;
+		auto ssid = mSignModel.wifiSSID();
+		auto wifiPassword = mSignModel.wifiPassword();
+		auto ip = mSignModel.wifiIP();
+		auto subnet = mSignModel.wifiSubnetMask();
+		wifiMsg = Message::createSetWifiConfigRequest
+						(
+						mPassword.toStdString().data(),
+						ssid.toStdString().data(),
+						wifiPassword.toStdString().data(),
+						ip,
+						subnet
+						);
+
 		result = performInteraction(wifiMsg);
+		if (result != Ok)
+			goto stop;
+		else
+			mSignModel.clearWifiConfig();
+	}
 
+	if (mSignModel.isPasswordDirty()) {
+		Message passwordMsg;
+		passwordMsg = Message::createSetPasswordRequest
+				(mPassword.toStdString().data(),
+				 mSignModel.password().toStdString().data());
+		result = performInteraction(passwordMsg);
+		if (result != Ok)
+			goto stop;
+		else
+			mSignModel.clearPassword();
+
+	}
 
 stop:
 	mConnection.disconnect();

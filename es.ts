@@ -119,7 +119,7 @@
     </message>
     <message>
         <source>Blink</source>
-        <translation>Parpadear</translation>
+        <translation>Parpadeo</translation>
     </message>
     <message>
         <source>&amp;Frequency (Hz):</source>
@@ -201,15 +201,15 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Connection refused by host.</source>
-        <translation>Conección rechasada por el host.</translation>
+        <translation>Conexión rechazada por el host.</translation>
     </message>
     <message>
         <source>Remote host closed connection unexpectedly.</source>
-        <translation>Conección del host remoto se cerró inesperadamente.</translation>
+        <translation>El host remoto cerró la conexión de forma inesperada.</translation>
     </message>
     <message>
         <source>Host not found.</source>
-        <translation>No se encuentra el host.</translation>
+        <translation>Host no encontrado.</translation>
     </message>
     <message>
         <source>Network error.</source>
@@ -217,7 +217,7 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Received invalid response.</source>
-        <translation>Respuesta recibida invalida.</translation>
+        <translation>Respuesta recibida inválida.</translation>
     </message>
     <message>
         <source>TLS internal error.</source>
@@ -225,7 +225,7 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Invalid TLS user data.</source>
-        <translation>Datos TLS de usuario invalido.</translation>
+        <translation>Datos TLS de usuario inválidos.</translation>
     </message>
     <message>
         <source>Malformed packet.</source>
@@ -241,11 +241,11 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Invalid IP.</source>
-        <translation>IP invalida.</translation>
+        <translation>IP inválida.</translation>
     </message>
     <message>
         <source>Invalid IP subnet mask.</source>
-        <translation>Máscada IP de subred invalida.</translation>
+        <translation>Máscara de subred inválida.</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -253,11 +253,11 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>An error occurred</source>
-        <translation>Un error a ocurrido</translation>
+        <translation>Ha ocurrido un error</translation>
     </message>
     <message>
         <source>Not ready.</source>
-        <translation>No esta listo.</translation>
+        <translation>No listo.</translation>
     </message>
     <message>
         <source>Ready.</source>
@@ -265,7 +265,7 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Connecting to host...</source>
-        <translation>Conectado al host...</translation>
+        <translation>Conectando al host...</translation>
     </message>
     <message>
         <source>Connected.</source>
@@ -273,7 +273,7 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>Waiting for response...</source>
-        <translation>Esperando por una respuesta...</translation>
+        <translation>Esperando respuesta...</translation>
     </message>
     <message>
         <source>Response received.</source>
