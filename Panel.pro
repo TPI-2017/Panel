@@ -44,7 +44,6 @@ SOURCES += \
         main.cpp \
         panel.cpp \
 	translation.cpp \
-	controller.cpp \
 	client.cpp \
 	protocol/Message.cpp \
 	connection.cpp \
@@ -56,7 +55,6 @@ SOURCES += \
 HEADERS += \
 	panel.h \
 	translation.h \
-	controller.h \
 	client.h \
 	protocol/Message.h \
 	signmodel.h \

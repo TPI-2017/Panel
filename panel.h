@@ -28,6 +28,8 @@ signals:
 				QString wifiPassword,
 				quint32 ip,
 				quint32 subnetMask);
+	void blinkRateChanged(float);
+	void slideRateChanged(float);
 	void modelEmitNeeded();
 	void setPasswordIssued(QString);
 
@@ -38,6 +40,8 @@ public slots:
 	void clientDone(Client::ClientError);
 	void updateState(Client::State);
 	void showError(Client::ClientError);
+	void updateBlinkRate(float);
+	void updateSlideRate(float);
 
 private slots:
 	void showConfigDialog();
@@ -47,8 +51,8 @@ private slots:
 	void applySettings();
 	void quit();
 	void validateText();
-	void slideRateCheckChanged(int state);
 	void blinkRateCheckChanged(int state);
+	void slideRateCheckChanged(int state);
 
 private:
 	bool showLoginPrompt();

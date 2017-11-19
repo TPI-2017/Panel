@@ -22,10 +22,10 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc,argv);
 
+	Translation::translate(Translation::Spanish);
 	checkSslSupport();
 	Panel w;
 	w.init();
 
-	Translation::translate();
 	return a.exec();
 }
