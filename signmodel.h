@@ -4,38 +4,6 @@
 #include <QObject>
 #include <QString>
 
-template<typename T>
-class Field
-{
-public:
-	const T& get() const
-	{
-		return mObject;
-	}
-
-	bool update(const T &newValue)
-	{
-		bool equal = mObject == newValue;
-		committed = committed && equal;
-		mObject = newValue;
-		return !equal;
-	}
-
-	void commit()
-	{
-		committed = true;
-	}
-
-	bool dirty() const
-	{
-		return !committed;
-	}
-
-private:
-	bool committed = false;
-	T mObject;
-};
-
 class SignModel : public QObject
 {
 	Q_OBJECT
@@ -45,59 +13,40 @@ public:
 	{
 	}
 
-	// Marca todo el contenido como
-	void commit()
-	{
-		mText.commit();
-		mWifiSSID.commit();
-		mWifiPassword.commit();
-		mWifiIP.commit();
-		mWifiSubnetMask.commit();
-		mBlinkRate.commit();
-		mSlideRate.commit();
-		mDirty = false;
-	}
-
-	// Devuelve verdadero si hay algún cambio no mandado al cartel
-	bool dirty() const
-	{
-		return mDirty;
-	}
-
 	// Getters
 	const QString &text() const
 	{
-		return mText.get();
+		return mText;
 	}
 
 	const QString &wifiSSID() const
 	{
-		return mWifiSSID.get();
+		return mWifiSSID;
 	}
 
 	const QString &wifiPassword() const
 	{
-		return mWifiPassword.get();
+		return mWifiPassword;
 	}
 
 	const quint32 &wifiIP() const
 	{
-		return mWifiIP.get();
+		return mWifiIP;
 	}
 
 	const quint32 &wifiSubnetMask() const
 	{
-		return mWifiSubnetMask.get();
+		return mWifiSubnetMask;
 	}
 
 	float blinkRate() const
 	{
-		return mBlinkRate.get();
+		return mBlinkRate;
 	}
 
 	float slideRate() const
 	{
-		return mSlideRate.get();
+		return mSlideRate;
 	}
 
 signals:
@@ -113,91 +62,73 @@ signals:
 public slots:
 	void setPassword(QString text)
 	{
-		if(mPassword.update(text)) {
-			mDirty = true;
-			emit passwordChanged(text);
-		}
+		mPassword = text;
+		emit passwordChanged(text);
 	}
 
 	void setText(QString text)
 	{
-		if(mText.update(text)) {
-			mDirty = true;
-			emit textChanged(text);
-		}
+		mText = text;
+		emit textChanged(text);
 	}
 
 	void setWifiSSID(QString ssid)
 	{
-		if(mWifiSSID.update(ssid)) {
-			mDirty = true;
-			emit wifiSSIDChanged(ssid);
-		}
+		mWifiSSID = ssid;
+		emit wifiSSIDChanged(ssid);
 	}
 
 	void setWifiPassword(QString password)
 	{
-		if(mWifiPassword.update(password)) {
-			mDirty = true;
-			emit wifiPasswordChanged(password);
-		}
+		mWifiPassword = password;
+		emit wifiPasswordChanged(password);
 	}
 
 	void setWifiIP(quint32 ip)
 	{
-		if(mWifiIP.update(ip)) {
-			mDirty = true;
-			emit wifiIPChanged(ip);
-		}
+		mWifiIP = ip;
+		emit wifiIPChanged(ip);
 	}
 
 	void setWifiSubnetMask(quint32 subnetMask)
 	{
-		if(mWifiSubnetMask.update(subnetMask)) {
-			mDirty = true;
-			emit wifiSubnetMaskChanged(subnetMask);
-		}
+		mWifiSubnetMask = subnetMask;
+		emit wifiSubnetMaskChanged(subnetMask);
 	}
 
 	void setBlinkRate(float blinkRate)
 	{
-		if(mBlinkRate.update(blinkRate)) {
-			mDirty = true;
-			emit blinkRateChanged(blinkRate);
-		}
+		mBlinkRate = blinkRate;
+		emit blinkRateChanged(blinkRate);
 	}
 
 	void setSlideRate(float slideRate)
 	{
-		if(mSlideRate.update(slideRate)) {
-			mDirty = true;
-			emit slideRateChanged(slideRate);
-		}
+		mSlideRate = slideRate;
+		emit slideRateChanged(slideRate);
 	}
 
 	void emitValues()
 	{
-		emit textChanged(mPassword.get());
-		emit textChanged(mText.get());
-		emit wifiSSIDChanged(mWifiSSID.get());
-		emit wifiPasswordChanged(mWifiPassword.get());
-		emit wifiIPChanged(mWifiIP.get());
-		emit wifiSubnetMaskChanged(mWifiSubnetMask.get());
-		emit blinkRateChanged(mBlinkRate.get());
-		emit slideRateChanged(mSlideRate.get());
+		emit textChanged(mPassword);
+		emit textChanged(mText);
+		emit wifiSSIDChanged(mWifiSSID);
+		emit wifiPasswordChanged(mWifiPassword);
+		emit wifiIPChanged(mWifiIP);
+		emit wifiSubnetMaskChanged(mWifiSubnetMask);
+		emit blinkRateChanged(mBlinkRate);
+		emit slideRateChanged(mSlideRate);
 	}
 
-
 private:
-	Field<QString> mPassword;
-	Field<QString> mText;
-	Field<QString> mWifiSSID;
-	Field<QString> mWifiPassword;
-	Field<quint32> mWifiIP;
-	Field<quint32> mWifiSubnetMask;
-	Field<float> mBlinkRate;
-	Field<float> mSlideRate;
-	bool mDirty = true;
+	QString mPassword;
+	QString mText;
+	QString mWifiSSID;
+	QString mWifiPassword;
+	quint32 mWifiIP;
+	quint32 mWifiSubnetMask;
+	float mBlinkRate;
+	float mSlideRate;
 };
 
 #endif
