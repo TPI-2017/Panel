@@ -12,7 +12,10 @@ Connection::Connection(QObject *parent)
 bool Connection::connect(QString hostname)
 {
 	mSocket.connectToHostEncrypted(hostname, 443);
-	return mSocket.waitForEncrypted(TIMEOUT_MS);
+	if (mSocket.waitForConnected(TIMEOUT_MS))
+		return mSocket.waitForEncrypted(TIMEOUT_MS);
+	else
+		return false;
 }
 
 bool Connection::send(const Message &msg)

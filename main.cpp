@@ -6,7 +6,7 @@
 #include <client.h>
 #include <iostream>
 
-static void checkSslSupport()
+static bool sslSupported()
 {
 	QString ssl = QSslSocket::sslLibraryBuildVersionString();
 	if (!QSslSocket::supportsSsl()) {
@@ -15,17 +15,21 @@ static void checkSslSupport()
 					QObject::tr("The program will not run correctly. OpenSSL version required: ") + ssl,
 					QMessageBox::StandardButton::Ok);
 		messageBox.exec();
+		return false;
 	}
+	return true;
 }
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc,argv);
 
-	Translation::translate(Translation::Spanish);
-	checkSslSupport();
-	Panel w;
-	w.init();
-
-	return a.exec();
+	if (sslSupported()) {
+		Translation::translate(Translation::Spanish);
+		Panel w;
+		w.init();
+		return a.exec();
+	} else {
+		return -1;
+	}
 }
