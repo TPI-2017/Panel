@@ -409,15 +409,16 @@ Panel::~Panel()
 
 void Panel::closeEvent(QCloseEvent *event)
 {
-	int result = QMessageBox::Accepted;
+	int result = QMessageBox::Ok;
 	if (mPendingChanges) {
-		result = QMessageBox::warning(this,
+		result = QMessageBox::question(this,
 				tr("Panel"),
 				tr("Quit without saving?"),
-				QMessageBox::Ok | QMessageBox::Cancel);
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
 	}
 
-	if (result == QMessageBox::Accepted)
+	if (result == QMessageBox::Ok)
 		event->accept();
 	else
 		event->ignore();
