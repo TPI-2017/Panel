@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include "client.h"
 
 
@@ -66,3 +66,4 @@ int test_main()
 
 	return 0;
 }
+*/

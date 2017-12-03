@@ -85,7 +85,7 @@
             <double>7.000000000000000</double>
            </property>
            <property name="singleStep">
-            <double>0.250000000000000</double>
+            <double>0.062500000000000</double>
            </property>
           </widget>
          </item>
@@ -124,7 +124,7 @@
             <double>7.000000000000000</double>
            </property>
            <property name="singleStep">
-            <double>0.250000000000000</double>
+            <double>0.062500000000000</double>
            </property>
           </widget>
          </item>

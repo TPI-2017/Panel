@@ -9,9 +9,8 @@
 Panel::Panel(QWidget *parent)
 : QMainWindow(parent),
   ui(new Ui::Panel),
-  mClient(new Client()),
-  mClientThread(new QThread()),
-  mPendingChanges(false)
+  mClient(new Client(mModel)),
+  mClientThread(new QThread())
 {
 	ui->setupUi(this);
 }
@@ -64,6 +63,11 @@ void Panel::init()
 		this,
 		&Panel::blinkRateWidgetChanged);
 
+	connect(ui->directionBox,
+		QOverload<int>::of(&QComboBox::activated),
+		this,
+		&Panel::slideDirectionChanged);
+
 
 	// Para accionar un apply() o restore() en Client.
 	connect(this, &Panel::applyRequested,
@@ -82,30 +86,6 @@ void Panel::init()
 		this, &Panel::clientDone);
 	connect(mClient, &Client::stateChanged,
 		this, &Panel::updateState);
-
-	// Para que el modelo actualice la vista
-	connect(&mClient->model(), &SignModel::textChanged,
-		ui->textMessageField, &QPlainTextEdit::setPlainText);
-	connect(&mClient->model(), &SignModel::blinkRateChanged,
-		this, &Panel::updateBlinkRate);
-	connect(&mClient->model(), &SignModel::slideRateChanged,
-		this, &Panel::updateSlideRate);
-
-	// Para pasar cambios en la vista al controlador (Client)
-	connect(this, &Panel::textChanged,
-		mClient, &Client::setText);
-	connect(this, &Panel::wifiConfigChanged,
-		mClient, &Client::setWifiConfig);
-	connect(this, &Panel::setPasswordIssued,
-		mClient, &Client::setPassword);
-	connect(this, &Panel::blinkRateChanged,
-		mClient, &Client::setBlinkRate);
-	connect(this, &Panel::slideRateChanged,
-		mClient, &Client::setSlideRate);
-
-	// Para pedir la reemisión de todos los valores del modelo
-	connect(this, &Panel::modelEmitNeeded,
-		&mClient->model(), &SignModel::emitValues);
 
 	if (!showLoginPrompt()) {
 		close();
@@ -148,12 +128,14 @@ void Panel::showAboutDialog()
 void Panel::applySettings()
 {
 	this->setEnabled(false);
-	emit textChanged(ui->textMessageField->toPlainText());
-	emit blinkRateChanged(ui->frequencySpinBox->value());
+	QWriteLocker locker(&mModel);
+	mModel.setText(ui->textMessageField->toPlainText());
+
 	float slideRate = ui->speedSpinBox->value();
+	mModel.setBlinkRate(ui->frequencySpinBox->value());
 	if (ui->directionBox->currentIndex() == 0)
 		slideRate *= -1.0;
-	emit slideRateChanged(slideRate);
+	mModel.setSlideRate(slideRate);
 	emit applyRequested();
 }
 
@@ -165,12 +147,11 @@ void Panel::restoreSettings()
 
 void Panel::showPasswordDialog()
 {
-	PasswordDialog *dialog = new PasswordDialog(this);
-	if (dialog->exec() == QDialog::Accepted) {
-		emit setPasswordIssued(dialog->getPassword());
+	PasswordDialog dialog;
+	if (dialog.exec() == QDialog::Accepted) {
+		mModel.setPassword(dialog.getPassword());
 		updateButtons(true);
 	}
-	delete dialog;
 }
 
 void Panel::updateText(QString text)
@@ -212,6 +193,10 @@ void Panel::clientDone(Client::ClientError status)
 		restoreSettings();
 	} else {
 		updateButtons(false);
+		QReadLocker locker(&mModel);
+		this->ui->textMessageField->setPlainText(mModel.text());
+		this->updateBlinkRate(mModel.blinkRate());
+		this->updateSlideRate(mModel.slideRate());
 		this->setEnabled(true);
 	}
 }
@@ -292,46 +277,32 @@ void Panel::slideRateWidgetChanged(double value)
 	updateButtons(true);
 }
 
+void Panel::slideDirectionChanged(int index)
+{
+	updateButtons(true);
+}
+
 void Panel::updateButtons(bool pendingChanges)
 {
 	ui->applyButton->setEnabled(pendingChanges);
 	ui->restoreButton->setEnabled(pendingChanges);
-	mPendingChanges = pendingChanges;
 }
 
 void Panel::showConfigDialog()
 {
-	ConfigDialog *configDialog = new ConfigDialog(this);
-	// Todas estas conexiones son para llenar el formulario
-	connect(&mClient->model(),
-		&SignModel::wifiSSIDChanged,
-		configDialog,
-		&ConfigDialog::setSSID);
-	connect(&mClient->model(),
-		&SignModel::wifiPasswordChanged,
-		configDialog,
-		&ConfigDialog::setPassword);
-	connect(&mClient->model(),
-		&SignModel::wifiIPChanged,
-		configDialog,
-		&ConfigDialog::setIP);
-	connect(&mClient->model(),
-		&SignModel::wifiSubnetMaskChanged,
-		configDialog,
-		&ConfigDialog::setMask);
-	emit modelEmitNeeded();
+	ConfigDialog configDialog;
+	QWriteLocker locker(&mModel);
 
-	if (configDialog->exec() != QDialog::Accepted) {
-		delete configDialog;
-		return;
+	// Llenamos el formulario
+	configDialog.setSSID(mModel.wifiSSID());
+	configDialog.setPassword(mModel.wifiPassword());
+
+	if (configDialog.exec() == QDialog::Accepted) {
+		mModel.setWifiSSID(configDialog.getSSID());
+		mModel.setWifiPassword(configDialog.getPassword());
+		updateButtons(true);
 	}
 
-	updateButtons(true);
-	emit wifiConfigChanged(	configDialog->getSSID(),
-				configDialog->getPassword(),
-				configDialog->getIP(),
-				configDialog->getMask());
-	delete configDialog;
 }
 
 void Panel::showError(Client::ClientError error)
@@ -410,7 +381,8 @@ Panel::~Panel()
 void Panel::closeEvent(QCloseEvent *event)
 {
 	int result = QMessageBox::Ok;
-	if (mPendingChanges) {
+	QReadLocker locker(&mModel);
+	if (mModel.dirty()) {
 		result = QMessageBox::question(this,
 				tr("Panel"),
 				tr("Quit without saving?"),
