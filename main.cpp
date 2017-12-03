@@ -10,9 +10,9 @@ static bool sslSupported()
 {
 	QString ssl = QSslSocket::sslLibraryBuildVersionString();
 	if (!QSslSocket::supportsSsl()) {
-		QMessageBox messageBox(	QMessageBox::Warning,
+		QMessageBox messageBox(	QMessageBox::Critical,
 					QObject::tr("TLS not supported."),
-					QObject::tr("The program will not run correctly. OpenSSL version required: ") + ssl,
+					QObject::tr("This program cannot run without OpenSSL.\nOpenSSL version required: ") + ssl,
 					QMessageBox::StandardButton::Ok);
 		messageBox.exec();
 		return false;

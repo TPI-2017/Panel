@@ -10,14 +10,14 @@ Panel::Panel(QWidget *parent)
 : QMainWindow(parent),
   ui(new Ui::Panel),
   mClient(new Client()),
-  mClientThread(new QThread())
+  mClientThread(new QThread()),
+  mPendingChanges(false)
 {
 	ui->setupUi(this);
 }
 
 void Panel::init()
 {
-	validateText();
 	setEnabled(false);
 	show();
 
