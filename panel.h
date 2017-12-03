@@ -62,11 +62,11 @@ private slots:
 
 private:
 	bool showLoginPrompt();
-	bool mPendingChanges = false;
 
 	Ui::Panel *ui;
 	Client *mClient;
 	QThread *mClientThread;
+	bool mPendingChanges = false;
 };
 
 #endif // PANEL_H
