@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QCloseEvent>
 #include "client.h"
+#include "signmodel.h"
 
 namespace Ui {
 	class Panel;
@@ -24,15 +25,6 @@ signals:
 	void restoreRequested();
 	void hostnameChanged(QString);
 	void passwordChanged(QString);
-	void textChanged(QString);
-	void wifiConfigChanged( QString SSID,
-				QString wifiPassword,
-				quint32 ip,
-				quint32 subnetMask);
-	void blinkRateChanged(float);
-	void slideRateChanged(float);
-	void modelEmitNeeded();
-	void setPasswordIssued(QString);
 
 public slots:
 	// Slots de actualización del modelo
@@ -58,6 +50,7 @@ private slots:
 	void slideRateCheckChanged(int state);
 	void blinkRateWidgetChanged(double value);
 	void slideRateWidgetChanged(double value);
+	void slideDirectionChanged(int index);
 	void updateButtons(bool pendingChanges);
 
 private:
@@ -65,8 +58,8 @@ private:
 
 	Ui::Panel *ui;
 	Client *mClient;
+	SignModel mModel;
 	QThread *mClientThread;
-	bool mPendingChanges = false;
 };
 
 #endif // PANEL_H

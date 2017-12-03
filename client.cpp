@@ -43,16 +43,27 @@ Client::ClientError Client::toClientError(QAbstractSocket::SocketError error)
 	}
 }
 
-Client::Client()
-: mSignModel(this),
+Client::Client(SignModel &signModel)
+: mSignModel(signModel),
   mConnection(this)
 {
 	qRegisterMetaType<State>("State");
 	qRegisterMetaType<ClientError>("ClientError");
 }
 
+void Client::setHostname(QString hostname)
+{
+	mHostname = hostname;
+}
+
+void Client::setWorkingPassword(QString password)
+{
+	mPassword = password;
+}
+
 void Client::apply()
 {
+	QReadLocker locker(&mSignModel);
 	ClientError result;
 	changeState(Connecting);
 	if (!mConnection.connect(mHostname)) {
@@ -125,6 +136,7 @@ stop:
 
 void Client::restore()
 {
+	QReadLocker locker(&mSignModel);
 	ClientError result;
 	Message getTextMsg;
 	Message getWifiMsg;
@@ -148,51 +160,9 @@ void Client::restore()
 		result = performInteraction(getWifiMsg);
 
 stop:
-	mSignModel.emitValues();
 	mConnection.disconnect();
 	changeState(Disconnected);
 	emit done(result);
-}
-
-void Client::setText(QString text)
-{
-	mSignModel.setText(text);
-}
-
-void Client::setPassword(QString text)
-{
-	mSignModel.setPassword(text);
-}
-
-void Client::setBlinkRate(float blinkRate)
-{
-	mSignModel.setBlinkRate(blinkRate);
-}
-
-void Client::setSlideRate(float slideRate)
-{
-	mSignModel.setSlideRate(slideRate);
-}
-
-void Client::setWorkingPassword(QString password)
-{
-	mPassword = password;
-}
-
-void Client::setHostname(QString hostname)
-{
-	mHostname = hostname;
-}
-
-void Client::setWifiConfig(QString SSID,
-			QString wifiPassword,
-			quint32 ip,
-			quint32 subnetMask)
-{
-	mSignModel.setWifiSSID(SSID);
-	mSignModel.setWifiPassword(wifiPassword);
-	mSignModel.setWifiIP(ip);
-	mSignModel.setWifiSubnetMask(subnetMask);
 }
 
 Client::ClientError Client::performInteraction(const Message &request)
@@ -239,11 +209,13 @@ Client::ClientError Client::handleResponse(const Message &response)
 		mSignModel.setWifiPassword(QString::fromLatin1(response.wifiPassword()));
 		mSignModel.setWifiIP(quint32(response.wifiIP()));
 		mSignModel.setWifiSubnetMask(quint32(response.wifiSubnet()));
+		mSignModel.clearWifiConfig();
 		break;
 	case Message::GetTextResponse:
 		mSignModel.setText(QString::fromLatin1(response.text()));
 		mSignModel.setBlinkRate(floating<uint8_t, 4>(response.blinkRate()));
 		mSignModel.setSlideRate(floating<int8_t, 4>(response.slideRate()));
+		mSignModel.clearText();
 		break;
 	default:
 		break;

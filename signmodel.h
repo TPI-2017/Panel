@@ -3,13 +3,12 @@
 
 #include <QObject>
 #include <QString>
+#include <QReadWriteLock>
 
-class SignModel : public QObject
+class SignModel : public QReadWriteLock
 {
-	Q_OBJECT
 public:
-	explicit SignModel(QObject *parent = 0)
-	: QObject(parent)
+	explicit SignModel()
 	{
 	}
 
@@ -54,83 +53,57 @@ public:
 		return mSlideRate;
 	}
 
-signals:
-	void passwordChanged(QString);
-	void textChanged(QString);
-	void wifiSSIDChanged(QString);
-	void wifiPasswordChanged(QString);
-	void wifiIPChanged(quint32);
-	void wifiSubnetMaskChanged(quint32);
-	void blinkRateChanged(float);
-	void slideRateChanged(float);
-
-public slots:
 	void setPassword(QString text)
 	{
 		mPassword = text;
 		mPasswordDirty = true;
-		emit passwordChanged(text);
 	}
 
 	void setText(QString text)
 	{
 		mText = text;
 		mTextDirty = true;
-		emit textChanged(text);
 	}
 
 	void setBlinkRate(float blinkRate)
 	{
 		mBlinkRate = blinkRate;
 		mTextDirty = true;
-		emit blinkRateChanged(blinkRate);
 	}
 
 	void setSlideRate(float slideRate)
 	{
 		mSlideRate = slideRate;
 		mTextDirty = true;
-		emit slideRateChanged(slideRate);
 	}
 
 	void setWifiSSID(QString ssid)
 	{
 		mWifiSSID = ssid;
 		mWifiConfigDirty = true;
-		emit wifiSSIDChanged(ssid);
 	}
 
 	void setWifiPassword(QString password)
 	{
 		mWifiPassword = password;
 		mWifiConfigDirty = true;
-		emit wifiPasswordChanged(password);
 	}
 
 	void setWifiIP(quint32 ip)
 	{
 		mWifiIP = ip;
 		mWifiConfigDirty = true;
-		emit wifiIPChanged(ip);
 	}
 
 	void setWifiSubnetMask(quint32 subnetMask)
 	{
 		mWifiSubnetMask = subnetMask;
 		mWifiConfigDirty = true;
-		emit wifiSubnetMaskChanged(subnetMask);
 	}
 
-	void emitValues()
+	bool dirty() const
 	{
-		emit textChanged(mPassword);
-		emit textChanged(mText);
-		emit wifiSSIDChanged(mWifiSSID);
-		emit wifiPasswordChanged(mWifiPassword);
-		emit wifiIPChanged(mWifiIP);
-		emit wifiSubnetMaskChanged(mWifiSubnetMask);
-		emit blinkRateChanged(mBlinkRate);
-		emit slideRateChanged(mSlideRate);
+		return mPasswordDirty || mTextDirty || mWifiConfigDirty;
 	}
 
 	bool isPasswordDirty() const
