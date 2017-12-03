@@ -194,10 +194,11 @@ void Panel::clientDone(Client::ClientError status)
 	} else {
 		updateButtons(false);
 		QReadLocker locker(&mModel);
-		this->ui->textMessageField->setPlainText(mModel.text());
-		this->updateBlinkRate(mModel.blinkRate());
-		this->updateSlideRate(mModel.slideRate());
-		this->setEnabled(true);
+		ui->textMessageField->setPlainText(mModel.text());
+		updateBlinkRate(mModel.blinkRate());
+		updateSlideRate(mModel.slideRate());
+		updateButtons(false);
+		setEnabled(true);
 	}
 }
 
