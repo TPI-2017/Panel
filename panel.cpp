@@ -4,6 +4,7 @@
 #include "logindialog.h"
 #include "configdialog.h"
 #include "passworddialog.h"
+#include "protocol/Message.h"
 #include <QMessageBox>
 
 Panel::Panel(QWidget *parent)
@@ -13,6 +14,13 @@ Panel::Panel(QWidget *parent)
   mClientThread(new QThread())
 {
 	ui->setupUi(this);
+	// Definir rango y resolución para los QSpinBoxes
+	ui->speedSpinBox->setMaximum(Message::MAX_SLIDE_RATE);
+	ui->speedSpinBox->setMinimum(0.0);
+	ui->speedSpinBox->setSingleStep(Message::SLIDE_RATE_RESOLUTION);
+	ui->frequencySpinBox->setMaximum(Message::MAX_BLINK_RATE);
+	ui->frequencySpinBox->setMinimum(0.0);
+	ui->frequencySpinBox->setSingleStep(Message::BLINK_RATE_RESOLUTION);
 }
 
 void Panel::init()

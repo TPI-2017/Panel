@@ -4,19 +4,6 @@
 #include <QThread>
 #include <iostream>
 
-template <typename T, uint8_t F>
-static T fixed(float num)
-{
-	num = std::max<float>(-7.0, std::min<float>(num, 7.0));
-	return static_cast<T>(num * static_cast<float>(1 << F));
-}
-
-template <typename T, uint8_t F>
-static float floating(T fp)
-{
-	return static_cast<float>(fp / static_cast<float>(1 << F));
-}
-
 Client::ClientError Client::toClientError(QAbstractSocket::SocketError error)
 {
 	std::cerr << error << std::endl;
@@ -75,8 +62,8 @@ void Client::apply()
 	if (mSignModel.isTextDirty()) {
 		Message textMsg;
 		auto text = mSignModel.text();
-		auto br = fixed<uint8_t, 4>(mSignModel.blinkRate());
-		auto sr = fixed<int8_t, 4>(mSignModel.slideRate());
+		auto br = mSignModel.blinkRate();
+		auto sr = mSignModel.slideRate();
 
 		textMsg = Message::createSetTextRequest
 						(
@@ -213,8 +200,8 @@ Client::ClientError Client::handleResponse(const Message &response)
 		break;
 	case Message::GetTextResponse:
 		mSignModel.setText(QString::fromLatin1(response.text()));
-		mSignModel.setBlinkRate(floating<uint8_t, 4>(response.blinkRate()));
-		mSignModel.setSlideRate(floating<int8_t, 4>(response.slideRate()));
+		mSignModel.setBlinkRate(response.blinkRate());
+		mSignModel.setSlideRate(response.slideRate());
 		mSignModel.clearText();
 		break;
 	default:
