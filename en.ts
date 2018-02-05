@@ -11,14 +11,6 @@
         <source>Network password:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>IP:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subnet mask:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>LoginDialog</name>
@@ -91,10 +83,6 @@
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -232,6 +220,10 @@ Ternouski, Sebastian Nahuel
         <source>Response received.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Quit without saving?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PasswordDialog</name>
@@ -247,7 +239,8 @@ Ternouski, Sebastian Nahuel
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The program will not run correctly. OpenSSL version required: </source>
+        <source>This program cannot run without OpenSSL.
+OpenSSL version required: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

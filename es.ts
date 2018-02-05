@@ -13,11 +13,11 @@
     </message>
     <message>
         <source>IP:</source>
-        <translation>IP:</translation>
+        <translation type="vanished">IP:</translation>
     </message>
     <message>
         <source>Subnet mask:</source>
-        <translation>Máscara de subred:</translation>
+        <translation type="vanished">Máscara de subred:</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     </message>
     <message>
         <source>Connection</source>
-        <translation>Conexión</translation>
+        <translation type="vanished">Conexión</translation>
     </message>
     <message>
         <source>Language</source>
@@ -301,6 +301,10 @@ Romero Dapozo, Ramiro
 Ternouski, Sebastian Nahuel
 </translation>
     </message>
+    <message>
+        <source>Quit without saving?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PasswordDialog</name>
@@ -317,7 +321,12 @@ Ternouski, Sebastian Nahuel
     </message>
     <message>
         <source>The program will not run correctly. OpenSSL version required: </source>
-        <translation>Este programa no va a ejecutarse correctamente. La versión que se requiere de OpenSSL es: </translation>
+        <translation type="vanished">Este programa no va a ejecutarse correctamente. La versión que se requiere de OpenSSL es: </translation>
+    </message>
+    <message>
+        <source>This program cannot run without OpenSSL.
+OpenSSL version required: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
