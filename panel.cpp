@@ -6,6 +6,7 @@
 #include "passworddialog.h"
 #include "protocol/Message.h"
 #include <QMessageBox>
+#include <cmath>
 
 Panel::Panel(QWidget *parent)
 : QMainWindow(parent),
@@ -53,11 +54,11 @@ void Panel::init()
 		this,
 		&Panel::validateText);
 	connect(ui->slideCheckBox,
-		QCheckBox::stateChanged,
+		&QCheckBox::stateChanged,
 		this,
 		&Panel::slideRateCheckChanged);
 	connect(ui->blinkCheckBox,
-		QCheckBox::stateChanged,
+		&QCheckBox::stateChanged,
 		this,
 		&Panel::blinkRateCheckChanged);
 
